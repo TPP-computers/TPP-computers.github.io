@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beginner Worksheet: Computer Logic — Interactive Exercises</title>
+  <meta name="description" content="Beginner-friendly introduction to computer logic with interactive exercises: AND, OR, NOT, XOR, truth tables, and real-life examples." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,700&family=Inter:wght@400,500,600,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#fbf7f0;
+      --paper: rgba(255,255,255,.70);
+      --ink:#141414;
+      --muted:#3f3a35;
+      --faint:#6b635c;
+
+      --line: rgba(20,20,20,.16);
+      --hardline: rgba(20,20,20,.30);
+
+      --teal:#0b4f6c;
+      --red:#d1495b;
+      --hi:#f6d55c;
+
+      --radius: 18px;
+      --shadow: 0 22px 60px rgba(0,0,0,.12);
+      --shadow2: 0 10px 24px rgba(0,0,0,.10);
+
+      --max: 1100px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 16% 10%, rgba(11,79,108,.17), transparent 55%),
+        radial-gradient(900px 520px at 86% 18%, rgba(209,73,91,.14), transparent 58%),
+        radial-gradient(900px 520px at 65% 92%, rgba(246,213,92,.12), transparent 60%),
+        linear-gradient(180deg, #fff, var(--bg) 40%, #fff 120%);
+    }
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03) 1px, transparent 1px, transparent 26px);
+      mix-blend-mode:multiply;
+      opacity:.32;
+    }
+
+    /* Top bar */
+    header.top{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(251,247,240,.72);
+      border-bottom:1px solid var(--line);
+    }
+    .top-inner{
+      max-width: var(--max);
+      margin:0 auto;
+      padding: 12px 16px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 260px;
+    }
+    .mark{
+      width:38px; height:38px;
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(246,213,92,.95), transparent 55%),
+        radial-gradient(circle at 70% 40%, rgba(209,73,91,.85), transparent 55%),
+        radial-gradient(circle at 40% 75%, rgba(11,79,108,.95), transparent 55%),
+        linear-gradient(140deg, rgba(20,20,20,.92), rgba(20,20,20,.62));
+      box-shadow: var(--shadow2);
+      border: 1px solid rgba(255,255,255,.35);
+    }
+    .brand h1{
+      font-family: Fraunces, serif;
+      margin:0;
+      font-size: 18px;
+      letter-spacing: .1px;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.2;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      appearance:none;
+      border:1px solid var(--hardline);
+      background: rgba(255,255,255,.56);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      user-select:none;
+      font-size: 13px;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.82); }
+    .btn:active{ transform: translateY(0) scale(.99); }
+    .btn.primary{
+      border-color: rgba(11,79,108,.55);
+      background: linear-gradient(180deg, rgba(11,79,108,.12), rgba(11,79,108,.06));
+    }
+    .btn.danger{
+      border-color: rgba(209,73,91,.55);
+      background: linear-gradient(180deg, rgba(209,73,91,.12), rgba(209,73,91,.06));
+    }
+
+    main{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 16px 56px;
+    }
+
+    .sheet{
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .sheet:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(209,73,91,.10), transparent 160px),
+        radial-gradient(700px 260px at 0% 40%, rgba(209,73,91,.10), transparent 70%),
+        radial-gradient(900px 480px at 100% 0%, rgba(11,79,108,.10), transparent 60%);
+      pointer-events:none;
+    }
+
+    .hero{
+      position:relative;
+      padding: 22px 22px 16px;
+      border-bottom: 1px dashed var(--hardline);
+      display:grid;
+      gap: 12px;
+    }
+    .hero h2{
+      margin:0;
+      font-family: Fraunces, serif;
+      font-size: clamp(28px, 2.4vw + 18px, 46px);
+      letter-spacing: -0.4px;
+      line-height:1.05;
+    }
+    .hero .sub{
+      margin:0;
+      color: var(--muted);
+      line-height:1.55;
+      font-size: 14.8px;
+      max-width: 85ch;
+    }
+
+    .grid{
+      position:relative;
+      padding: 18px 22px 22px;
+      display:grid;
+      gap: 16px;
+    }
+
+    section.block{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+    }
+    section.block:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(620px 220px at 10% 0%, rgba(246,213,92,.18), transparent 55%);
+      opacity: .8;
+      pointer-events:none;
+    }
+    section.block > *{ position:relative; }
+
+    .block h3{
+      margin:0 0 8px;
+      font-family: Fraunces, serif;
+      font-size: 20px;
+      letter-spacing: -0.2px;
+    }
+    .block p, .block li{
+      margin: 0 0 8px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14.6px;
+    }
+    .block ul{ margin: 8px 0 0 18px; padding:0; }
+
+    .callout{
+      border-left: 4px solid var(--teal);
+      padding: 10px 12px;
+      background: linear-gradient(90deg, rgba(11,79,108,.10), transparent);
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+    .callout strong{ color: var(--ink); }
+
+    /* Interactive lab */
+    .lab{
+      display:grid;
+      gap: 12px;
+    }
+    .lab-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+    .lab-top .desc{
+      max-width: 70ch;
+      color: var(--muted);
+      line-height:1.55;
+      font-size: 14.6px;
+      margin:0;
+    }
+    .switches{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.55);
+    }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(251,247,240,.75);
+    }
+    .toggle label{
+      font-weight: 900;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--faint);
+    }
+
+    .switch{
+      --w: 52px;
+      --h: 30px;
+      position:relative;
+      width: var(--w);
+      height: var(--h);
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.18);
+      background: rgba(0,0,0,.10);
+      cursor:pointer;
+      display:inline-block;
+      outline: none;
+    }
+    .switch::after{
+      content:"";
+      position:absolute;
+      top: 50%;
+      left: 4px;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 6px 14px rgba(0,0,0,.18);
+      transition: left .18s ease, background .18s ease, transform .18s ease;
+    }
+    .switch[aria-checked="true"]{
+      background: rgba(11,79,108,.25);
+      border-color: rgba(11,79,108,.45);
+    }
+    .switch[aria-checked="true"]::after{
+      left: calc(100% - 26px);
+      background: rgba(246,213,92,.95);
+    }
+    .switch:active::after{ transform: translateY(-50%) scale(.97); }
+
+    .outputs{
+      display:grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px){
+      .outputs{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .out{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.62);
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .out .left{
+      display:grid; gap: 4px;
+    }
+    .out .left .g{
+      font-family: Fraunces, serif;
+      font-size: 18px;
+      letter-spacing:-.2px;
+    }
+    .out .left .small{
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height:1.35;
+    }
+    .lamp{
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.12);
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(255,255,255,.35) 30%, transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.06));
+      display:grid;
+      place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .lamp .digit{
+      font-family: var(--mono);
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--ink);
+    }
+    .lamp.on{
+      border-color: rgba(246,213,92,.55);
+      background:
+        radial-gradient(circle at 40% 35%, rgba(255,255,255,.95), rgba(246,213,92,.85) 38%, rgba(246,213,92,.22) 68%, transparent 72%),
+        linear-gradient(180deg, rgba(246,213,92,.55), rgba(246,213,92,.20));
+      box-shadow: 0 18px 40px rgba(246,213,92,.22);
+    }
+
+    /* Exercises */
+    .q{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.62);
+      padding: 14px;
+    }
+    .qhead{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .qhead h4{
+      margin:0;
+      font-size: 15px;
+      letter-spacing: .1px;
+    }
+    .pts{
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      border: 1px solid var(--line);
+      background: rgba(251,247,240,.85);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+    .prompt{
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 14.6px;
+      line-height:1.55;
+      max-width: 95ch;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.70);
+    }
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding: 10px;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    th{
+      text-align:left;
+      font-size: 12.5px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: var(--faint);
+      background: rgba(11,79,108,.06);
+    }
+    tr:last-child td{ border-bottom:0; }
+
+    input[type="text"], textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 10px;
+      background: rgba(255,255,255,.74);
+      font: inherit;
+      color: var(--ink);
+      outline:none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    textarea{ min-height: 86px; resize: vertical; }
+
+    .mc{
+      display:grid;
+      gap:10px;
+      grid-template-columns: 1fr;
+      margin-top: 10px;
+    }
+    @media (min-width: 720px){
+      .mc{ grid-template-columns: 1fr 1fr; }
+    }
+    .opt{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.62);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .opt:hover{ transform: translateY(-1px); background: rgba(255,255,255,.80); }
+    .opt input{ margin-top: 3px; transform: scale(1.05); }
+    .opt label{ cursor:pointer; color: var(--muted); line-height:1.35; font-size: 14.6px; }
+    .opt code{
+      font-family: var(--mono);
+      font-weight: 900;
+      font-size: 12.5px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(246,213,92,.25);
+      border: 1px solid rgba(0,0,0,.08);
+      color: var(--ink);
+    }
+
+    .status{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .badge{
+      border:1px solid var(--line);
+      background: rgba(251,247,240,.90);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 900;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--faint);
+      white-space:nowrap;
+    }
+    .score{
+      font-family: Fraunces, serif;
+      font-size: 24px;
+      letter-spacing:-.3px;
+    }
+
+    details.key{
+      border: 1px solid var(--hardline);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(11,79,108,.08), rgba(255,255,255,.62));
+      overflow:hidden;
+    }
+    details.key summary{
+      cursor:pointer;
+      list-style:none;
+      padding: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+    }
+    details.key summary::-webkit-details-marker{ display:none; }
+    .caret{
+      width: 12px; height: 12px;
+      border-right: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      transform: rotate(45deg);
+      transition: transform .2s ease;
+      opacity:.8;
+    }
+    details[open] .caret{ transform: rotate(225deg); }
+    .key-inner{
+      padding: 0 14px 14px;
+      border-top: 1px dashed var(--hardline);
+    }
+    .key-inner p, .key-inner li{ color: var(--muted); line-height:1.55; font-size: 14.6px; }
+    .key-inner code{
+      font-family: var(--mono);
+      font-weight: 900;
+      font-size: 12.5px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(246,213,92,.28);
+      border: 1px solid rgba(0,0,0,.08);
+      color: var(--ink);
+    }
+
+    footer{
+      position:relative;
+      padding: 14px 22px 22px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-size: 12.5px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+
+    /* Reveal animation */
+    .reveal{ opacity:0; transform: translateY(10px); animation: rise .7s ease forwards; }
+    @keyframes rise{ to{ opacity:1; transform: translateY(0); } }
+    .d1{ animation-delay: .05s; }
+    .d2{ animation-delay: .12s; }
+    .d3{ animation-delay: .18s; }
+    .d4{ animation-delay: .24s; }
+
+    /* Print */
+    @media print{
+      body{ background:#fff; }
+      body:before{ display:none; }
+      header.top{ display:none; }
+      main{ padding:0; max-width:none; }
+      .sheet{ box-shadow:none; border:0; border-radius:0; }
+      .sheet:before{ display:none; }
+      .btn{ display:none; }
+      details.key{ border-color:#000; }
+      .opt:hover{ transform:none; }
+      .switches{ display:none; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .reveal{ opacity:1; transform:none; animation:none; }
+      .btn,.opt{ transition:none; }
+      .caret{ transition:none; }
+      .switch::after{ transition:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="top" role="banner">
+    <div class="top-inner">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Computer Logic — Beginner Worksheet</h1>
+          <p> • interactive exercises</p>
+        </div>
+      </div>
+      <div class="actions" aria-label="Actions">
+        <button class="btn primary" id="checkBtn" type="button">✓ Check answers</button>
+        <button class="btn" id="toggleKeyBtn" type="button">▾ Toggle answer key</button>
+        <button class="btn danger" id="resetBtn" type="button">↺ Reset</button>
+        <button class="btn" id="printBtn" type="button">⎙ Print</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <article class="sheet" aria-label="Beginner computer logic worksheet">
+      <header class="hero">
+        <h2 class="reveal d1">Learn Computer Logic with Fun Exercises</h2>
+        <p class="sub reveal d2">
+          Computers use <strong>0</strong> and <strong>1</strong> to make decisions.  
+          These exercises help you practice how logic gates work.
+        </p>
+      </header>
+
+      <div class="grid">
+        <section class="block reveal d2">
+          <h3>Quick Reminder</h3>
+          <ul>
+            <li><strong>AND</strong>: Output is 1 only if both inputs are 1.</li>
+            <li><strong>OR</strong>: Output is 1 if at least one input is 1.</li>
+            <li><strong>NOT</strong>: Flips the input (0 becomes 1, 1 becomes 0).</li>
+            <li><strong>XOR</strong>: Output is 1 if inputs are different.</li>
+          </ul>
+        </section>
+
+        <section class="lab reveal d3" aria-label="Interactive switch lab">
+          <h3>Try It Yourself: Switch Inputs</h3>
+          <p>Click the switches to change inputs A and B. See how the outputs change for each gate.</p>
+          <div class="switches" aria-label="Input switches">
+            <div class="toggle" aria-label="Toggle input A">
+              <label for="swA">A</label>
+              <button class="switch" id="swA" type="button" role="switch" aria-checked="false" aria-label="Input A switch"></button>
+            </div>
+            <div class="toggle" aria-label="Toggle input B">
+              <label for="swB">B</label>
+              <button class="switch" id="swB" type="button" role="switch" aria-checked="false" aria-label="Input B switch"></button>
+            </div>
+            <span class="tag" id="abReadout" aria-live="polite">A=0, B=0</span>
+          </div>
+
+          <div class="outputs" aria-label="Gate outputs">
+            <div class="out">
+              <div class="left">
+                <div class="g">AND</div>
+                <div class="small">Both must be 1.</div>
+              </div>
+              <div class="lamp" id="lampAND" aria-label="AND output lamp"><div class="digit" id="valAND">0</div></div>
+            </div>
+
+            <div class="out">
+              <div class="left">
+                <div class="g">OR</div>
+                <div class="small">At least one is 1.</div>
+              </div>
+              <div class="lamp" id="lampOR" aria-label="OR output lamp"><div class="digit" id="valOR">0</div></div>
+            </div>
+
+            <div class="out">
+              <div class="left">
+                <div class="g">NOT A</div>
+                <div class="small">Flips A.</div>
+              </div>
+              <div class="lamp" id="lampNOT" aria-label="NOT output lamp"><div class="digit" id="valNOT">1</div></div>
+            </div>
+
+            <div class="out">
+              <div class="left">
+                <div class="g">XOR</div>
+                <div class="small">Different = 1.</div>
+              </div>
+              <div class="lamp" id="lampXOR" aria-label="XOR output lamp"><div class="digit" id="valXOR">0</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="q reveal d3" id="q1">
+          <div class="qhead">
+            <h4>1) Fill the OR truth table</h4>
+            <div class="pts">4 pts</div>
+          </div>
+          <p class="prompt">Fill in the output for <strong>OR</strong>. Use only 0 or 1.</p>
+
+          <table aria-label="OR truth table">
+            <thead>
+              <tr><th style="width:12%">A</th><th style="width:12%">B</th><th>OR (A + B)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td>0</td><td><input data-key="q1r1" inputmode="numeric" maxlength="1" type="text" aria-label="Row 1 OR output"></td></tr>
+              <tr><td>0</td><td>1</td><td><input data-key="q1r2" inputmode="numeric" maxlength="1" type="text" aria-label="Row 2 OR output"></td></tr>
+              <tr><td>1</td><td>0</td><td><input data-key="q1r3" inputmode="numeric" maxlength="1" type="text" aria-label="Row 3 OR output"></td></tr>
+              <tr><td>1</td><td>1</td><td><input data-key="q1r4" inputmode="numeric" maxlength="1" type="text" aria-label="Row 4 OR output"></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="q reveal d3" id="q2">
+          <div class="qhead">
+            <h4>2) Quick check: which gate?</h4>
+            <div class="pts">4 pts</div>
+          </div>
+          <p class="prompt">Pick the correct gate for each sentence.</p>
+
+          <div class="mc" role="group" aria-label="Multiple choice gate identification">
+            <div class="opt">
+              <input type="radio" id="q2a_and" name="q2a" value="AND">
+              <label for="q2a_and"><strong>2A)</strong> Output is 1 only when both inputs are 1. (<code>AND</code>)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2a_or" name="q2a" value="OR">
+              <label for="q2a_or"><strong>2A)</strong> Output is 1 only when both inputs are 1. (<code>OR</code>)</label>
+            </div>
+
+            <div class="opt">
+              <input type="radio" id="q2b_not" name="q2b" value="NOT">
+              <label for="q2b_not"><strong>2B)</strong> Flips the input (0→1, 1→0). (<code>NOT</code>)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2b_xor" name="q2b" value="XOR">
+              <label for="q2b_xor"><strong>2B)</strong> Flips the input (0→1, 1→0). (<code>XOR</code>)</label>
+            </div>
+
+            <div class="opt">
+              <input type="radio" id="q2c_xor" name="q2c" value="XOR">
+              <label for="q2c_xor"><strong>2C)</strong> Output is 1 when inputs are different. (<code>XOR</code>)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2c_or" name="q2c" value="OR">
+              <label for="q2c_or"><strong>2C)</strong> Output is 1 when inputs are different. (<code>OR</code>)</label>
+            </div>
+
+            <div class="opt">
+              <input type="radio" id="q2d_or" name="q2d" value="OR">
+              <label for="q2d_or"><strong>2D)</strong> Output is 1 when at least one input is 1. (<code>OR</code>)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q2d_and" name="q2d" value="AND">
+              <label for="q2d_and"><strong>2D)</strong> Output is 1 when at least one input is 1. (<code>AND</code>)</label>
+            </div>
+          </div>
+        </section>
+
+        <section class="q reveal d3" id="q3">
+          <div class="qhead">
+            <h4>3) Real-life rule: Door unlock</h4>
+            <div class="pts">4 pts</div>
+          </div>
+          <p class="prompt">
+            A door unlocks if the code is correct (A=1) <strong>AND</strong> the door is closed (B=1).
+            <br>Write what happens (output 0 or 1) for each case:
+          </p>
+
+          <table aria-label="Door unlock table">
+            <thead>
+              <tr><th style="width:18%">A</th><th style="width:18%">B</th><th>Unlock? (0/1)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>0</td><td><input data-key="q3r1" inputmode="numeric" maxlength="1" type="text" aria-label="Door case 1 output"></td></tr>
+              <tr><td>0</td><td>1</td><td><input data-key="q3r2" inputmode="numeric" maxlength="1" type="text" aria-label="Door case 2 output"></td></tr>
+              <tr><td>1</td><td>1</td><td><input data-key="q3r3" inputmode="numeric" maxlength="1" type="text" aria-label="Door case 3 output"></td></tr>
+              <tr><td>0</td><td>0</td><td><input data-key="q3r4" inputmode="numeric" maxlength="1" type="text" aria-label="Door case 4 output"></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="q reveal d4" id="q4">
+          <div class="qhead">
+            <h4>4) Challenge: One topping only</h4>
+            <div class="pts">1 pts</div>
+          </div>
+          <p class="prompt">
+            You can choose <strong>sprinkles (A)</strong> or <strong>chocolate (B)</strong>, but <strong>not both</strong>.
+            Which gate matches this rule?
+          </p>
+
+          <div class="mc" role="group" aria-label="Choose the gate question">
+            <div class="opt">
+              <input type="radio" id="q4_and" name="q4" value="AND">
+              <label for="q4_and"><strong>AND</strong> (both)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_or" name="q4" value="OR">
+              <label for="q4_or"><strong>OR</strong> (at least one)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_not" name="q4" value="NOT">
+              <label for="q4_not"><strong>NOT</strong> (flip)</label>
+            </div>
+            <div class="opt">
+              <input type="radio" id="q4_xor" name="q4" value="XOR">
+              <label for="q4_xor"><strong>XOR</strong> (different / one only)</label>
+            </div>
+          </div>
+        </section>
+
+        <details class="key reveal d3" id="key">
+          <summary>Answer key <span class="caret" aria-hidden="true"></span></summary>
+          <div class="key-inner">
+            <ul>
+              <li><strong>Q1 (OR):</strong> 0, 1, 1, 1</li>
+              <li><strong>Q2:</strong> 2A AND, 2B NOT, 2C XOR, 2D OR</li>
+              <li><strong>Q3 (AND rule):</strong> (1,0)=0 • (0,1)=0 • (1,1)=1 • (0,0)=0</li>
+              <li><strong>Q4:</strong> XOR</li>
+            </ul>
+            <p>
+              Use the interactive switches above to test your answers.
+            </p>
+          </div>
+        </details>
+
+        <div class="status reveal d4" aria-label="Score status">
+          <span class="badge">Auto-scored</span>
+          <span class="score"><span id="score">—</span> / 13</span>
+          <span class="badge" id="feedback">Fill in answers, then press “Check answers”.</span>
+        </div>
+      </div>
+
+      <footer>
+        <div><strong>Teacher tip:</strong> Ask students to say the rule in words first (“both”, “at least one”, “flip”, “different”).</div>
+        <div><strong>Time:</strong> 20–30 minutes • <strong>Works on paper:</strong> use Print</div>
+      </footer>
+    </article>
+  </main>
+
+  <script>
+    (function(){
+      const $ = (s, r=document) => r.querySelector(s);
+      const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+      const STORE = "logic14-beginner-interactive-v1";
+
+      const ANSWERS = {
+        q1r1:"0", q1r2:"1", q1r3:"1", q1r4:"1",
+        q2a:"AND", q2b:"NOT", q2c:"XOR", q2d:"OR",
+        q3r1:"0", q3r2:"0", q3r3:"1", q3r4:"0",
+        q4:"XOR"
+      };
+      const MAX = 13;
+
+      const scoreEl = $("#score");
+      const feedbackEl = $("#feedback");
+      const key = $("#key");
+
+      function normalize01(v){
+        const s = String(v ?? "").trim();
+        if(s === "0" || s === "1") return s;
+        const d = s.replace(/[^\d]/g,"").slice(0,1);
+        return (d === "0" || d === "1") ? d : "";
+      }
+
+      function setGood(el){
+        el.style.borderColor = "rgba(11,79,108,.70)";
+        el.style.boxShadow = "0 0 0 4px rgba(11,79,108,.12)";
+      }
+      function setBad(el){
+        el.style.borderColor = "rgba(209,73,91,.75)";
+        el.style.boxShadow = "0 0 0 4px rgba(209,73,91,.12)";
+      }
+      function setNeutral(el){
+        el.style.borderColor = "";
+        el.style.boxShadow = "";
+      }
+
+      // Switch lab
+      let A = 0, B = 0;
+      const swA = $("#swA"), swB = $("#swB");
+      const abReadout = $("#abReadout");
+
+      function gateAND(a,b){ return (a===1 && b===1) ? 1 : 0; }
+      function gateOR(a,b){ return (a===1 || b===1) ? 1 : 0; }
+      function gateNOT(a){ return a===1 ? 0 : 1; }
+      function gateXOR(a,b){ return (a!==b) ? 1 : 0; }
+
+      function setLamp(idLamp, idVal, v){
+        const lamp = $(idLamp);
+        const val = $(idVal);
+        val.textContent = String(v);
+        lamp.classList.toggle("on", v === 1);
+      }
+
+      function renderLab(){
+        swA.setAttribute("aria-checked", A ? "true" : "false");
+        swB.setAttribute("aria-checked", B ? "true" : "false");
+        abReadout.textContent = `A=${A}, B=${B}`;
+
+        setLamp("#lampAND", "#valAND", gateAND(A,B));
+        setLamp("#lampOR", "#valOR", gateOR(A,B));
+        setLamp("#lampNOT", "#valNOT", gateNOT(A));
+        setLamp("#lampXOR", "#valXOR", gateXOR(A,B));
+      }
+
+      function toggleSwitch(which){
+        if(which === "A") A = A ? 0 : 1;
+        if(which === "B") B = B ? 0 : 1;
+        persist();
+        renderLab();
+      }
+
+      swA.addEventListener("click", ()=>toggleSwitch("A"));
+      swB.addEventListener("click", ()=>toggleSwitch("B"));
+      swA.addEventListener("keydown", (e)=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggleSwitch("A"); }});
+      swB.addEventListener("keydown", (e)=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggleSwitch("B"); }});
+
+      // Scoring
+      function radioValue(name){
+        return $(`input[type="radio"][name="${CSS.escape(name)}"]:checked`)?.value || "";
+      }
+
+      function score(){
+        let s = 0;
+
+        // inputs (0/1) questions
+        $$("input[data-key]").forEach(inp=>{
+          const key = inp.dataset.key;
+          const expected = ANSWERS[key];
+          const got = normalize01(inp.value);
+          inp.value = got;
+          if(got){
+            if(got === expected){ s += 1; setGood(inp); }
+            else setBad(inp);
+          } else setNeutral(inp);
+        });
+
+        // radios
+        ["q2a","q2b","q2c","q2d","q4"].forEach(name=>{
+          const expected = ANSWERS[name];
+          const got = radioValue(name);
+          const opts = $$(`input[type="radio"][name="${CSS.escape(name)}"]`).map(r=>r.closest(".opt"));
+          opts.forEach(o=>o && setNeutral(o));
+
+          if(got){
+            const chosen = $(`input[type="radio"][name="${CSS.escape(name)}"][value="${CSS.escape(got)}"]`)?.closest(".opt");
+            if(got === expected){
+              s += 1;
+              if(chosen) setGood(chosen);
+            } else {
+              if(chosen) setBad(chosen);
+            }
+          }
+        });
+
+        scoreEl.textContent = String(s);
+
+        if(s === MAX){
+          feedbackEl.textContent = "Perfect! You’ve got the basics.";
+          feedbackEl.style.borderColor = "rgba(11,79,108,.45)";
+        } else if(s >= 12){
+          feedbackEl.textContent = "Nice work — review any red answers and use the switch lab to test.";
+          feedbackEl.style.borderColor = "rgba(11,79,108,.35)";
+        } else {
+          feedbackEl.textContent = "Keep going — try the switch lab with (0,0), (0,1), (1,0), (1,1).";
+          feedbackEl.style.borderColor = "rgba(209,73,91,.35)";
+        }
+
+        persist();
+      }
+
+      // Persistence
+      function persist(){
+        const data = {
+          A, B
+        };
+
+        $$("input[data-key]").forEach(inp=>{
+          data["k:"+inp.dataset.key] = inp.value;
+        });
+        ["q2a","q2b","q2c","q2d","q4"].forEach(name=>{
+          data["r:"+name] = radioValue(name);
+        });
+
+        try{ localStorage.setItem(STORE, JSON.stringify(data)); }catch(e){}
+      }
+
+      function restore(){
+        let data = null;
+        try{ data = JSON.parse(localStorage.getItem(STORE) || "null"); }catch(e){}
+        if(!data) return;
+
+        if(typeof data.A === "number") A = data.A ? 1 : 0;
+        if(typeof data.B === "number") B = data.B ? 1 : 0;
+
+        $$("input[data-key]").forEach(inp=>{
+          const v = data["k:"+inp.dataset.key];
+          if(typeof v === "string") inp.value = v;
+        });
+
+        ["q2a","q2b","q2c","q2d","q4"].forEach(name=>{
+          const v = data["r:"+name];
+          if(!v) return;
+          const el = $(`input[type="radio"][name="${CSS.escape(name)}"][value="${CSS.escape(v)}"]`);
+          if(el) el.checked = true;
+        });
+      }
+
+      // Buttons
+      $("#checkBtn").addEventListener("click", score);
+      $("#toggleKeyBtn").addEventListener("click", ()=>{
+        key.open = !key.open;
+        key.scrollIntoView({behavior:"smooth", block:"nearest"});
+      });
+      $("#resetBtn").addEventListener("click", ()=>{
+        const ok = confirm("Reset all answers on this device?");
+        if(!ok) return;
+
+        A = 0; B = 0;
+        $$("input[data-key]").forEach(inp=>{ inp.value=""; setNeutral(inp); });
+        $$("input[type='radio']").forEach(r=>{
+          r.checked = false;
+          const opt = r.closest(".opt");
+          if(opt) setNeutral(opt);
+        });
+        scoreEl.textContent = "—";
+        feedbackEl.textContent = "Fill in answers, then press “Check answers”.";
+        try{ localStorage.removeItem(STORE); }catch(e){}
+        renderLab();
+      });
+      $("#printBtn").addEventListener("click", ()=>window.print());
+
+      // Input hooks
+      $$("input[data-key]").forEach(inp=>{
+        inp.addEventListener("input", ()=>{
+          inp.value = normalize01(inp.value);
+          setNeutral(inp);
+          persist();
+        });
+      });
+      $$("input[type='radio']").forEach(r=>{
+        r.addEventListener("change", ()=>{
+          const opt = r.closest(".opt");
+          if(opt) setNeutral(opt);
+          persist();
+        });
+      });
+
+      // Reveal on scroll
+      (function setupReveal(){
+        const els = $$(".reveal");
+        if(!("IntersectionObserver" in window)){
+          els.forEach(el => { el.style.opacity = 1; el.style.transform = "none"; el.style.animation = "none"; });
+          return;
+        }
+        const io = new IntersectionObserver((entries)=>{
+          entries.forEach(ent=>{
+            if(ent.isIntersecting){
+              ent.target.style.animationPlayState = "running";
+              io.unobserve(ent.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        els.forEach(el=>{
+          el.style.animationPlayState = "paused";
+          io.observe(el);
+        });
+      })();
+
+      restore();
+      renderLab();
+    })();
+  </script>
+</body>
+</html>
