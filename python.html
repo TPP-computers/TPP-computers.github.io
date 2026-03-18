@@ -1,0 +1,2246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Python Worksheet — Novice → Confident (with Examples & Solutions)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,650,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --paper: #fbf6ee;
+      --ink: #161616;
+      --muted: rgba(22,22,22,.68);
+      --faint: rgba(22,22,22,.10);
+      --hairline: rgba(22,22,22,.14);
+
+      --accent: #1f4b99;
+      --accent2: #b84a2a;
+      --accent3: #0a7a63;
+      --hi: #f0d67a;
+
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: "IBM Plex Sans", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", sans-serif;
+      --serif: "Fraunces", ui-serif, Georgia, serif;
+
+      --radius: 18px;
+      --shadow: 0 18px 45px rgba(0,0,0,.08);
+      --shadow2: 0 10px 30px rgba(0,0,0,.08);
+
+      --max: 1180px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 16% 4%, rgba(31,75,153,.08), transparent 55%),
+                  radial-gradient(900px 520px at 90% 16%, rgba(184,74,42,.10), transparent 60%),
+                  radial-gradient(900px 600px at 50% 100%, rgba(10,122,99,.08), transparent 60%),
+                  var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.5;
+      overflow-x:hidden;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    ::selection{ background: rgba(240,214,122,.85); color: #141414; }
+
+    .grain{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      opacity: .08;
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size: 260px 260px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: rgba(251,246,238,.72);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .topbar{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+    }
+    .brand{
+      display:flex;
+      align-items:baseline;
+      gap: 10px;
+      min-width: 240px;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 8px 18px rgba(0,0,0,.05);
+    }
+    .brand h1{
+      margin:0;
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: .01em;
+    }
+    .brand small{
+      color: var(--muted);
+      font-weight: 500;
+      margin-left: 6px;
+      display:none;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .navlink{
+      font-size: 13px;
+      color: rgba(22,22,22,.82);
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      white-space: nowrap;
+    }
+    .navlink:hover{
+      background: rgba(255,255,255,.6);
+      border-color: var(--hairline);
+      transform: translateY(-1px);
+    }
+
+    .actions{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      min-width: 210px;
+      justify-content: flex-end;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor:pointer;
+      transition: transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      box-shadow: 0 10px 22px rgba(0,0,0,.06);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(0,0,0,.08);
+      background: rgba(255,255,255,.75);
+      border-color: rgba(22,22,22,.22);
+    }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(31,75,153,.14), rgba(31,75,153,.06));
+      border-color: rgba(31,75,153,.28);
+    }
+
+    main{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 22px 18px 80px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+      margin-top: 8px;
+    }
+
+    .panel{
+      border: 1px solid var(--hairline);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.54);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero .panel:first-child{
+      padding: 22px 20px 18px;
+      background:
+        radial-gradient(720px 240px at 20% 0%, rgba(240,214,122,.25), transparent 60%),
+        radial-gradient(520px 240px at 92% 10%, rgba(31,75,153,.16), transparent 60%),
+        rgba(255,255,255,.55);
+    }
+
+    .hero h2{
+      margin: 0 0 8px 0;
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: .01em;
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1.08;
+    }
+    .hero p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 70ch;
+    }
+
+    .metaRow{
+      margin-top: 16px;
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items:center;
+    }
+    .chip{
+      border-radius: 999px;
+      border: 1px dashed rgba(22,22,22,.20);
+      background: rgba(251,246,238,.55);
+      padding: 8px 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(22,22,22,.78);
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+    }
+    .chip b{
+      font-family: var(--sans);
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: rgba(22,22,22,.70);
+    }
+
+    .heroAside{
+      padding: 16px 16px 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.65), rgba(255,255,255,.50));
+    }
+    .asideTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .asideTitle h3{
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 18px;
+      letter-spacing: .01em;
+    }
+    .progress{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(22,22,22,.72);
+    }
+
+    .checklist{
+      padding: 12px 2px 0;
+      display:grid;
+      gap: 10px;
+    }
+    .check{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--hairline);
+      background: rgba(251,246,238,.45);
+      transition: transform .15s ease, background .2s ease;
+    }
+    .check:hover{ transform: translateY(-1px); background: rgba(251,246,238,.68); }
+    .check input{ margin-top: 2px; transform: translateY(1px); }
+    .check label{
+      font-size: 13px;
+      color: rgba(22,22,22,.82);
+      cursor:pointer;
+    }
+    .check small{
+      display:block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .worksheet{
+      margin-top: 18px;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      align-items:start;
+    }
+
+    .toc{
+      position: sticky;
+      top: 70px;
+      padding: 14px 14px 12px;
+    }
+    .toc h3{
+      margin: 0 0 8px 0;
+      font-family: var(--serif);
+      font-size: 16px;
+      letter-spacing: .01em;
+    }
+    .toc .hint{
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .tocList{
+      display:grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .tocList a{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      transition: border-color .2s ease, background .2s ease, transform .15s ease;
+      background: rgba(255,255,255,.35);
+    }
+    .tocList a:hover{
+      border-color: var(--hairline);
+      background: rgba(255,255,255,.60);
+      transform: translateY(-1px);
+    }
+    .tocList .k{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(22,22,22,.68);
+      white-space: nowrap;
+    }
+    .tocList .t{
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(22,22,22,.86);
+    }
+
+    .content{
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      overflow: visible;
+    }
+
+    section.sheet{
+      scroll-margin-top: 90px;
+      margin-bottom: 16px;
+      border: 1px solid var(--hairline);
+      border-radius: calc(var(--radius) + 4px);
+      background: rgba(255,255,255,.52);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+
+    .sheetHead{
+      padding: 16px 18px 14px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.52));
+      border-bottom: 1px solid var(--hairline);
+    }
+    .sheetHead h3{
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 700;
+      letter-spacing: .01em;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+    .sheetHead p{
+      margin: 6px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 80ch;
+    }
+    .level{
+      font-family: var(--mono);
+      font-size: 12px;
+      border: 1px solid var(--hairline);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: rgba(251,246,238,.55);
+      white-space: nowrap;
+    }
+
+    .sheetBody{
+      padding: 16px 18px 18px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .note{
+      padding: 12px 12px;
+      border-left: 3px solid rgba(31,75,153,.55);
+      background: linear-gradient(90deg, rgba(31,75,153,.08), rgba(31,75,153,0));
+      border-radius: 12px;
+    }
+    .note strong{
+      font-weight: 700;
+    }
+    .note p{ margin: 0; color: rgba(22,22,22,.80); font-size: 13px; }
+
+    .twoCol{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 14px;
+      align-items:start;
+    }
+
+    .block{
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(251,246,238,.35);
+    }
+    .blockHeader{
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(255,255,255,.55);
+    }
+    .blockHeader .title{
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .02em;
+    }
+    .blockHeader .tools{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+    }
+
+    .iconBtn{
+      border: 1px solid var(--hairline);
+      background: rgba(255,255,255,.65);
+      border-radius: 12px;
+      padding: 7px 9px;
+      cursor:pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: transform .15s ease, background .2s ease, border-color .2s ease;
+      font-family: var(--sans);
+    }
+    .iconBtn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.82);
+      border-color: rgba(22,22,22,.22);
+    }
+    .iconBtn:active{ transform: translateY(0px) scale(.99); }
+
+    pre{
+      margin:0;
+      padding: 12px;
+      overflow:auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: rgba(22,22,22,.92);
+      background:
+        radial-gradient(800px 240px at 20% 0%, rgba(240,214,122,.18), transparent 60%),
+        rgba(251,246,238,.25);
+    }
+    code{ font-family: var(--mono); }
+    .out pre{
+      background:
+        radial-gradient(900px 260px at 70% 0%, rgba(10,122,99,.14), transparent 62%),
+        rgba(255,255,255,.45);
+      color: rgba(22,22,22,.90);
+    }
+
+    .practice{
+      padding: 12px;
+      border-top: 1px solid var(--hairline);
+      background: rgba(255,255,255,.45);
+    }
+    .practice h4{
+      margin: 0 0 8px 0;
+      font-family: var(--serif);
+      font-size: 14px;
+      letter-spacing: .01em;
+    }
+    .qs{
+      margin:0;
+      padding-left: 16px;
+      color: rgba(22,22,22,.82);
+      font-size: 13px;
+    }
+    .qs li{ margin: 6px 0; }
+    .fill{
+      display:inline-block;
+      min-width: 120px;
+      border-bottom: 2px dotted rgba(22,22,22,.35);
+      transform: translateY(-2px);
+    }
+
+    .solution{
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-left: 4px solid var(--accent3);
+      background: rgba(10,122,99,.12);
+      font-family: var(--mono);
+      font-size: 13px;
+      white-space: pre-wrap;
+      color: #064635;
+      border-radius: 8px;
+    }
+
+    .kbd{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 2px 7px;
+      border: 1px solid var(--hairline);
+      border-bottom-color: rgba(22,22,22,.30);
+      border-radius: 8px;
+      background: rgba(255,255,255,.6);
+      box-shadow: 0 2px 0 rgba(0,0,0,.06);
+      white-space: nowrap;
+    }
+
+    .divider{
+      height: 1px;
+      background: var(--hairline);
+      margin: 4px 0;
+    }
+
+    .reveal{
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .reveal.in{
+      animation: rise .65s ease forwards;
+    }
+    @keyframes rise{
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    footer{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 18px 28px;
+      color: rgba(22,22,22,.72);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    footer .fine{
+      font-size: 12px;
+      max-width: 80ch;
+    }
+    footer .links{
+      display:flex; gap: 10px; flex-wrap: wrap;
+    }
+
+    @media (max-width: 980px){
+      .hero{ grid-template-columns: 1fr; }
+      .worksheet{ grid-template-columns: 1fr; }
+      .toc{ position: relative; top: 0; }
+      .twoCol{ grid-template-columns: 1fr; }
+      .brand small{ display:inline; }
+    }
+    @media print{
+      header, .toc, .actions, .tools, .grain { display:none !important; }
+      body{ background: #fff; }
+      main{ max-width: none; padding: 0; }
+      section.sheet{ break-inside: avoid; box-shadow:none; background:#fff; }
+      .panel{ box-shadow:none; }
+      pre{ font-size: 11px; }
+      a{ text-decoration:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <span class="badge">Worksheet</span>
+        <h1>Python: Novice → Confident</h1>
+        <small>mid-level commands with examples &amp; solutions</small>
+      </div>
+
+      <nav aria-label="Quick navigation">
+        <a class="navlink" href="#core">Core</a>
+        <a class="navlink" href="#strings">Strings</a>
+        <a class="navlink" href="#numbers">Numbers</a>
+        <a class="navlink" href="#control">Control flow</a>
+        <a class="navlink" href="#data">Data</a>
+        <a class="navlink" href="#functions">Functions</a>
+        <a class="navlink" href="#modules">Modules</a>
+        <a class="navlink" href="#files">Files</a>
+        <a class="navlink" href="#errors">Errors</a>
+        <a class="navlink" href="#comprehensions">Comprehensions</a>
+        <a class="navlink" href="#oop">OOP</a>
+      </nav>
+
+      <div class="actions">
+        <button class="btn primary" id="btnPrint" type="button" title="Print or save as PDF">
+          <span aria-hidden="true">⎙</span> Print / PDF
+        </button>
+        <button class="btn" id="btnExpand" type="button" aria-pressed="false" title="Expand all practice sections">
+          <span aria-hidden="true">▦</span> Expand
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero reveal" id="start">
+      <div class="panel">
+        <h2>Learn Python by reading, running, rewriting, and solving exercises.</h2>
+        <p>
+          This worksheet teaches common Python commands and patterns you’ll see in real scripts:
+          variables, strings, collections, loops, functions, file I/O, errors, comprehensions, and a clean intro to OOP.
+          Each section includes <span class="kbd">example code</span>, <span class="kbd">expected output</span>, and
+          <span class="kbd">practice prompts with solutions</span>.
+        </p>
+
+        <div class="metaRow" role="list" aria-label="Worksheet metadata">
+          <span class="chip" role="listitem"><b>Target</b> beginner → intermediate</span>
+          <span class="chip" role="listitem"><b>Style</b> examples + exercises + solutions</span>
+          <span class="chip" role="listitem"><b>Tip</b> run in REPL or a .py file</span>
+          <span class="chip" role="listitem"><b>Focus</b> “mid-level” everyday Python</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="worksheet">
+      <aside class="panel toc reveal" aria-label="Table of contents">
+        <h3>Table of contents</h3>
+        <p class="hint">Jump to a topic. Each section includes examples + practice + solutions.</p>
+        <ul class="tocList">
+          <li><a href="#core"><span class="t">1) Core syntax & built-ins</span><span class="k">print, input, type</span></a></li>
+          <li><a href="#strings"><span class="t">2) Strings</span><span class="k">slice, split, join</span></a></li>
+          <li><a href="#numbers"><span class="t">3) Numbers</span><span class="k">int/float, round</span></a></li>
+          <li><a href="#control"><span class="t">4) Control flow</span><span class="k">if, for, while</span></a></li>
+          <li><a href="#data"><span class="t">5) Lists, tuples, sets, dicts</span><span class="k">mutability</span></a></li>
+          <li><a href="#functions"><span class="t">6) Functions</span><span class="k">return, args</span></a></li>
+          <li><a href="#modules"><span class="t">7) Modules</span><span class="k">import, venv*</span></a></li>
+          <li><a href="#files"><span class="t">8) Files</span><span class="k">open, with</span></a></li>
+          <li><a href="#errors"><span class="t">9) Errors</span><span class="k">try/except</span></a></li>
+          <li><a href="#comprehensions"><span class="t">10) Comprehensions + useful tools</span><span class="k">zip, enumerate</span></a></li>
+          <li><a href="#oop"><span class="t">11) OOP basics</span><span class="k">class, __init__</span></a></li>
+        </ul>
+        <div class="divider"></div>
+        <p class="hint"><span class="kbd">Pro tip</span> Use <code>help()</code> and <code>dir()</code> to explore objects.</p>
+      </aside>
+
+      <div class="content">
+
+        <!-- 1 -->
+        <section class="sheet reveal" id="core" aria-labelledby="coreTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="coreTitle">1) Core syntax & built-ins</h3>
+              <p>Variables, printing, input (conceptually), types, truthiness, and common built-in helpers.</p>
+            </div>
+            <span class="level">Level: novice → solid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="note">
+              <p><strong>Remember:</strong> Python uses indentation (spaces) to mark blocks. Prefer 4 spaces per level.</p>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: variables, print, type</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#coreCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="coreCode"><code>name = "Sam"
+age = 14
+height_m = 1.62
+is_student = True
+
+print(name)
+print(age, height_m, is_student)
+print(type(name), type(age), type(height_m), type(is_student))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>Sam
+14 1.62 True
+&lt;class 'str'&gt; &lt;class 'int'&gt; &lt;class 'float'&gt; &lt;class 'bool'&gt;</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: truthiness + bool()</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#truthCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="truthCode"><code>print(bool(0), bool(1))
+print(bool(""), bool("hello"))
+print(bool([]), bool([0]))
+print(bool(None))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>False True
+False True
+False True
+False</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <h4>Try these:</h4>
+                <ol class="qs">
+                  <li>Create variables for: your name (str), your favorite number (int), and whether you like Python (bool). Print them on one line.</li>
+                  <li>What does <code>type(3/2)</code> return? What about <code>type(3//2)</code>?</li>
+                  <li>Make an empty list and check <code>bool(your_list)</code>. Then add one element and check again.</li>
+                  <li>Fill in: <code>answer = <span class="fill"></span></code> so that <code>bool(answer)</code> is <code>False</code>.</li>
+                  <li>Assign a variable <code>x</code> to the value <code>None</code>. Check its type and truthiness.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+name = "Alice"<br>
+fav_num = 7<br>
+likes_python = True<br>
+print(name, fav_num, likes_python)<br><br>
+# 2<br>
+print(type(3/2))  # float<br>
+print(type(3//2)) # int<br><br>
+# 3<br>
+lst = []<br>
+print(bool(lst))  # False<br>
+lst.append(42)<br>
+print(bool(lst))  # True<br><br>
+# 4<br>
+answer = 0  # or "", [], None, False<br>
+print(bool(answer))  # False<br><br>
+# 5<br>
+x = None<br>
+print(type(x))  # &lt;class 'NoneType'&gt;<br>
+print(bool(x))  # False
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 2 -->
+        <section class="sheet reveal" id="strings" aria-labelledby="stringsTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="stringsTitle">2) Strings (the everyday workhorse)</h3>
+              <p>Indexing, slicing, methods, formatting, splitting/joining, and cleaning input text.</p>
+            </div>
+            <span class="level">Level: novice → mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: indexing + slicing</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#sliceCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="sliceCode"><code>s = "python worksheet"
+print(s[0])        # first character
+print(s[-1])       # last character
+print(s[0:6])      # 'python'
+print(s[7:])       # from index 7 to end
+print(s[::2])      # step: every 2nd char</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>p
+t
+python
+worksheet
+pto okhet</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: common string methods</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#methodsCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="methodsCode"><code>raw = "   Hello, World!   "
+clean = raw.strip()
+
+print(clean.lower())
+print(clean.upper())
+print(clean.replace("World", "Python"))
+print(clean.startswith("Hello"), clean.endswith("!"))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>hello, world!
+HELLO, WORLD!
+Hello, Python!
+True True</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: split + join</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#splitJoinCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="splitJoinCode"><code>line = "apples, bananas, cherries"
+parts = [p.strip() for p in line.split(",")]
+print(parts)
+
+csv_again = ", ".join(parts)
+print(csv_again)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>['apples', 'bananas', 'cherries']
+apples, bananas, cherries</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: formatting (f-strings + format)</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#fmtCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="fmtCode"><code>item = "notebook"
+price = 3.5
+qty = 4
+
+print(f"{qty} × {item} = ${qty * price:.2f}")
+print("Total: ${:.2f}".format(qty * price))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output</div>
+                </div>
+                <pre><code>4 × notebook = $14.00
+Total: $14.00</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Given <code>s = "  Ada Lovelace  "</code>, produce <code>"ada_lovelace"</code> using <code>strip()</code>, <code>lower()</code>, and <code>replace()</code>.</li>
+                  <li>Write code that counts how many times the letter <code>"a"</code> appears in a string (<code>count()</code>).</li>
+                  <li>Use an f-string to print: <code>Hi NAME, you have N messages</code>.</li>
+                  <li>What does <code>"-".join(["a","b","c"])</code> produce? Verify by running it.</li>
+                  <li>Extract the domain from an email string like <code>"user@example.com"</code> using slicing and <code>split()</code>.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+s = "  Ada Lovelace  "<br>
+result = s.strip().lower().replace(" ", "_")<br>
+print(result)  # ada_lovelace<br><br>
+# 2<br>
+text = "banana"<br>
+print(text.count("a"))  # 3<br><br>
+# 3<br>
+name = "Sam"<br>
+messages = 5<br>
+print(f"Hi {name}, you have {messages} messages")<br><br>
+# 4<br>
+print("-".join(["a","b","c"]))  # a-b-c<br><br>
+# 5<br>
+email = "user@example.com"<br>
+domain = email.split("@")[1]<br>
+print(domain)  # example.com
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 -->
+        <section class="sheet reveal" id="numbers" aria-labelledby="numbersTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="numbersTitle">3) Numbers</h3>
+              <p>Integer vs float division, rounding, math helpers, and converting types safely.</p>
+            </div>
+            <span class="level">Level: novice → mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: / vs // vs %</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#divCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="divCode"><code>a = 17
+b = 5
+
+print(a / b)   # float division
+print(a // b)  # integer division (floor)
+print(a % b)   # remainder
+print(divmod(a, b))  # (quotient, remainder)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>3.4
+3
+2
+(3, 2)</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: rounding + min/max/sum</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#roundCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="roundCode"><code>nums = [2.3, 2.6, 2.5, 9.1]
+
+print(round(2.675, 2))  # floating point nuance
+print(min(nums), max(nums))
+print(sum(nums))
+print(round(sum(nums), 2))</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader">
+                  <div class="title">Expected output (may vary slightly)</div>
+                </div>
+                <pre><code>2.67
+2.3 9.1
+16.5
+16.5</code></pre>
+              </div>
+            </div>
+
+            <div class="note">
+              <p><strong>Floating point note:</strong> Some decimals can’t be represented exactly in binary. For money, consider <code>decimal.Decimal</code>.</p>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Compute how many full weeks are in 365 days and how many days remain (use <code>//</code> and <code>%</code>).</li>
+                  <li>Given <code>temps = [18, 21, 19, 23]</code>, compute the average.</li>
+                  <li>Convert <code>"42"</code> to an int and add 8. Print the result.</li>
+                  <li>Round the number <code>3.1415926535</code> to 3 decimal places.</li>
+                  <li>Find the minimum and maximum of the list <code>[7, 2, 9, 4]</code>.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+days = 365<br>
+weeks = days // 7<br>
+leftover = days % 7<br>
+print(weeks, leftover)  # 52 1<br><br>
+# 2<br>
+temps = [18, 21, 19, 23]<br>
+avg = sum(temps) / len(temps)<br>
+print(avg)  # 20.25<br><br>
+# 3<br>
+num = int("42") + 8<br>
+print(num)  # 50<br><br>
+# 4<br>
+pi = 3.1415926535<br>
+print(round(pi, 3))  # 3.142<br><br>
+# 5<br>
+lst = [7, 2, 9, 4]<br>
+print(min(lst), max(lst))  # 2 9
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 -->
+        <section class="sheet reveal" id="control" aria-labelledby="controlTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="controlTitle">4) Control flow (if / for / while)</h3>
+              <p>Branching with conditions, loops, <code>break</code>, <code>continue</code>, and common patterns.</p>
+            </div>
+            <span class="level">Level: novice → mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: if/elif/else</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#ifCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="ifCode"><code>score = 87
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "D or below"
+
+print(grade)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>B</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: for + range + enumerate</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#forCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="forCode"><code>items = ["pen", "pencil", "eraser"]
+
+for i, item in enumerate(items, start=1):
+    print(i, item)
+
+for n in range(3):
+    print("n =", n)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>1 pen
+2 pencil
+3 eraser
+n = 0
+n = 1
+n = 2</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: while + break + continue</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#whileCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="whileCode"><code>n = 0
+while n &lt; 10:
+    n += 1
+    if n % 2 == 1:
+        continue  # skip odds
+    print(n)
+    if n == 6:
+        break</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>2
+4
+6</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Loop over numbers 1..20 and print only those divisible by 3.</li>
+                  <li>Given a list of names, print the first name that starts with “A”. Stop after you find it.</li>
+                  <li>Write a <code>while</code> loop that counts down from 5 to 1, then prints “Go!”.</li>
+                  <li>Write a for loop that prints the squares of numbers from 1 to 10.</li>
+                  <li>Use <code>continue</code> to skip printing numbers divisible by 4 in a loop from 1 to 15.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+for n in range(1, 21):<br>
+    if n % 3 == 0:<br>
+        print(n)<br><br>
+# 2<br>
+names = ["John", "Alice", "Bob", "Andrew"]<br>
+for name in names:<br>
+    if name.startswith("A"):<br>
+        print(name)<br>
+        break<br><br>
+# 3<br>
+count = 5<br>
+while count &gt; 0:<br>
+    print(count)<br>
+    count -= 1<br>
+print("Go!")<br><br>
+# 4<br>
+for i in range(1, 11):<br>
+    print(i*i)<br><br>
+# 5<br>
+for i in range(1, 16):<br>
+    if i % 4 == 0:<br>
+        continue<br>
+    print(i)
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 -->
+        <section class="sheet reveal" id="data" aria-labelledby="dataTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="dataTitle">5) Data structures: list, tuple, set, dict</h3>
+              <p>How to store data, update it, look things up quickly, and choose the right structure.</p>
+            </div>
+            <span class="level">Level: novice → mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="note">
+              <p><strong>Rule of thumb:</strong> lists are ordered and mutable; tuples are ordered and immutable; sets are unordered unique items; dicts map keys → values.</p>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Lists: append, extend, slice, remove</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#listCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="listCode"><code>nums = [3, 1, 4]
+nums.append(1)
+nums.extend([5, 9])
+
+print(nums)
+print(nums[:3])  # first 3
+
+nums.remove(1)   # removes first matching 1
+print(nums)
+
+nums.sort()
+print(nums)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>[3, 1, 4, 1, 5, 9]
+[3, 1, 4]
+[3, 4, 1, 5, 9]
+[1, 3, 4, 5, 9]</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Tuples: unpacking</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#tupleCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="tupleCode"><code>point = (10, 25)
+
+x, y = point
+print(x, y)
+
+# "star" unpacking
+a, *middle, b = [1, 2, 3, 4, 5]
+print(a, middle, b)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>10 25
+1 [2, 3, 4] 5</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Sets: uniqueness + set operations</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#setCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="setCode"><code>a = {1, 2, 3, 3}
+b = {3, 4, 5}
+
+print(a)          # duplicates removed
+print(a | b)      # union
+print(a &amp; b)      # intersection
+print(a - b)      # difference</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>{1, 2, 3}
+{1, 2, 3, 4, 5}
+{3}
+{1, 2}</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Dicts: get, update, loop keys/values/items</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#dictCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="dictCode"><code>student = {"name": "Mina", "grade": 8}
+
+print(student["name"])
+print(student.get("age", "unknown"))  # safe lookup
+
+student["grade"] = 9
+student.update({"club": "Robotics"})
+
+for k, v in student.items():
+    print(k, "=&gt;", v)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>Mina
+unknown
+name =&gt; Mina
+grade =&gt; 9
+club =&gt; Robotics</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Make a list of 5 numbers. Print the last two using slicing.</li>
+                  <li>Create a set from a list with duplicates. Verify the duplicates are removed.</li>
+                  <li>Make a dict for a book with keys: <code>title</code>, <code>author</code>, <code>year</code>. Print a nice sentence using an f-string.</li>
+                  <li>Given <code>scores = {"Ava": 10, "Ben": 7, "Cy": 10}</code>, print only the names with score 10.</li>
+                  <li>Unpack the tuple <code>(100, 200, 300, 400)</code> into variables <code>a, b, *rest</code> and print them.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+nums = [10, 20, 30, 40, 50]<br>
+print(nums[-2:])  # [40, 50]<br><br>
+# 2<br>
+lst = [1, 2, 2, 3, 3, 3]<br>
+unique = set(lst)<br>
+print(unique)  # {1, 2, 3}<br><br>
+# 3<br>
+book = {"title": "1984", "author": "Orwell", "year": 1949}<br>
+print(f"{book['title']} by {book['author']} ({book['year']})")<br><br>
+# 4<br>
+scores = {"Ava": 10, "Ben": 7, "Cy": 10}<br>
+for name, score in scores.items():<br>
+    if score == 10:<br>
+        print(name)<br><br>
+# 5<br>
+t = (100, 200, 300, 400)<br>
+a, b, *rest = t<br>
+print(a, b, rest)  # 100 200 [300, 400]
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 -->
+        <section class="sheet reveal" id="functions" aria-labelledby="functionsTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="functionsTitle">6) Functions</h3>
+              <p>Parameters, return values, defaults, keyword arguments, <code>*args</code>, <code>**kwargs</code>, and lambda.</p>
+            </div>
+            <span class="level">Level: mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: define + return</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#fnCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="fnCode"><code>def area_rect(w, h):
+    return w * h
+
+print(area_rect(3, 4))
+print(area_rect(w=5, h=2))</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>12
+10</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: defaults + docstring</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#docCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="docCode"><code>def greet(name, punctuation="!"):
+    """Return a friendly greeting."""
+    return f"Hello, {name}{punctuation}"
+
+print(greet("Rae"))
+print(greet("Rae", punctuation="."))</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>Hello, Rae!
+Hello, Rae.</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: *args and **kwargs</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#argsCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="argsCode"><code>def summarize(*nums, label="sum"):
+    total = sum(nums)
+    return f"{label}: {total}"
+
+print(summarize(1, 2, 3))
+print(summarize(10, 20, label="total"))
+
+def show_profile(**info):
+    for k, v in info.items():
+        print(k, ":", v)
+
+show_profile(name="Noor", city="Austin", hobby="chess")</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>sum: 6
+total: 30
+name : Noor
+city : Austin
+hobby : chess</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: lambda + sorted(key=...)</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#lambdaCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="lambdaCode"><code>words = ["pear", "fig", "pineapple", "kiwi"]
+
+# Sort by length (not alphabetical)
+by_len = sorted(words, key=lambda w: len(w))
+print(by_len)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>['fig', 'pear', 'kiwi', 'pineapple']</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Write <code>is_even(n)</code> that returns <code>True</code> if <code>n</code> is even, else <code>False</code>.</li>
+                  <li>Write <code>clamp(x, low=0, high=100)</code> that forces a number into a range.</li>
+                  <li>Write a function that accepts any number of scores and returns the average.</li>
+                  <li>Sort a list of dicts by a key (e.g., <code>{"name": "...", "age": ...}</code> by age using <code>key=lambda d: d["age"]</code>).</li>
+                  <li>Write a lambda that squares a number and use it to map over a list.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+def is_even(n):<br>
+    return n % 2 == 0<br><br>
+# 2<br>
+def clamp(x, low=0, high=100):<br>
+    return max(low, min(x, high))<br><br>
+# 3<br>
+def average(*scores):<br>
+    return sum(scores) / len(scores) if scores else 0<br><br>
+# 4<br>
+people = [{"name": "Ann", "age": 30}, {"name": "Ben", "age": 25}]<br>
+sorted_people = sorted(people, key=lambda d: d["age"])<br>
+print(sorted_people)<br><br>
+# 5<br>
+square = lambda x: x*x<br>
+nums = [1, 2, 3, 4]<br>
+print(list(map(square, nums)))  # [1, 4, 9, 16]
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7 -->
+        <section class="sheet reveal" id="modules" aria-labelledby="modulesTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="modulesTitle">7) Modules (import)</h3>
+              <p>Use built-in modules, import styles, and the “main guard” pattern.</p>
+            </div>
+            <span class="level">Level: mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: import + alias</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#importCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="importCode"><code>import math
+import random as rnd
+
+print(math.sqrt(81))
+print(round(math.pi, 4))
+
+print(rnd.choice(["rock", "paper", "scissors"]))</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output (random varies)</div></div>
+                <pre><code>9.0
+3.1416
+paper</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: from ... import ...</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#fromImportCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="fromImportCode"><code>from datetime import date
+
+today = date.today()
+print(today.year, today.month, today.day)</code></pre>
+              </div>
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>2026 3 17</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Example: main guard (for scripts)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-copy="#mainGuardCode" type="button">Copy</button>
+                </div>
+              </div>
+              <pre id="mainGuardCode"><code>def main():
+    print("This runs when the file is executed directly.")
+
+if __name__ == "__main__":
+    main()</code></pre>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Import <code>statistics</code> and compute the mean of a list of numbers.</li>
+                  <li>Use <code>random.randint(1, 6)</code> to simulate a dice roll 10 times.</li>
+                  <li>Create a script with a <code>main()</code> function and the main guard.</li>
+                  <li>Import <code>datetime</code> and print the current date and time.</li>
+                  <li>Use <code>math.factorial()</code> to compute 5! (factorial).</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+import statistics<br>
+nums = [1, 2, 3, 4, 5]<br>
+print(statistics.mean(nums))  # 3<br><br>
+# 2<br>
+import random<br>
+for _ in range(10):<br>
+    print(random.randint(1, 6))<br><br>
+# 3<br>
+def main():<br>
+    print("Hello from main")<br>
+<br>
+if __name__ == "__main__":<br>
+    main()<br><br>
+# 4<br>
+from datetime import datetime<br>
+print(datetime.now())<br><br>
+# 5<br>
+import math<br>
+print(math.factorial(5))  # 120
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8 -->
+        <section class="sheet reveal" id="files" aria-labelledby="filesTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="filesTitle">8) Files (read/write)</h3>
+              <p>Use <code>with open(...)</code> to safely read and write. This is essential for real programs.</p>
+            </div>
+            <span class="level">Level: mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="note">
+              <p><strong>Best practice:</strong> use <code>with</code> so the file is always closed, even if an error happens.</p>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: write a text file</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#writeCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="writeCode"><code>lines = ["apples", "bananas", "cherries"]
+
+with open("fruits.txt", "w", encoding="utf-8") as f:
+    for item in lines:
+        f.write(item + "\n")</code></pre>
+              </div>
+
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: read a text file</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#readCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="readCode"><code>with open("fruits.txt", "r", encoding="utf-8") as f:
+    text = f.read()
+
+print(text)</code></pre>
+              </div>
+            </div>
+
+            <div class="block out">
+              <div class="blockHeader"><div class="title">Expected output</div></div>
+              <pre><code>apples
+bananas
+cherries</code></pre>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: read lines into a list (cleaned)</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#readLinesCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="readLinesCode"><code>with open("fruits.txt", "r", encoding="utf-8") as f:
+    fruits = [line.strip() for line in f]
+
+print(fruits)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>['apples', 'bananas', 'cherries']</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Write 3 lines to a file called <code>notes.txt</code>. Then read it back and print it.</li>
+                  <li>Read a file and count how many lines it contains.</li>
+                  <li>Append a new line to an existing file (use mode <code>"a"</code>).</li>
+                  <li>Write a function that reads a file and returns the number of words.</li>
+                  <li>Write a function that copies content from one file to another.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+with open("notes.txt", "w", encoding="utf-8") as f:<br>
+    f.write("Line 1\nLine 2\nLine 3\n")<br>
+<br>
+with open("notes.txt", "r", encoding="utf-8") as f:<br>
+    print(f.read())<br><br>
+# 2<br>
+with open("notes.txt", "r", encoding="utf-8") as f:<br>
+    lines = f.readlines()<br>
+print(len(lines))  # 3<br><br>
+# 3<br>
+with open("notes.txt", "a", encoding="utf-8") as f:<br>
+    f.write("Line 4\n")<br><br>
+# 4<br>
+def count_words(filename):<br>
+    with open(filename, "r", encoding="utf-8") as f:<br>
+        text = f.read()<br>
+    return len(text.split())<br>
+<br>
+print(count_words("notes.txt"))<br><br>
+# 5<br>
+def copy_file(src, dst):<br>
+    with open(src, "r", encoding="utf-8") as fsrc, open(dst, "w", encoding="utf-8") as fdst:<br>
+        for line in fsrc:<br>
+            fdst.write(line)<br>
+<br>
+copy_file("notes.txt", "notes_copy.txt")
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9 -->
+        <section class="sheet reveal" id="errors" aria-labelledby="errorsTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="errorsTitle">9) Errors & exceptions</h3>
+              <p>Use <code>try</code>/<code>except</code> to handle failures, and <code>finally</code> for cleanup.</p>
+            </div>
+            <span class="level">Level: mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: handle invalid input</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#tryCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="tryCode"><code>def to_int(text):
+    try:
+        return int(text)
+    except ValueError:
+        return None
+
+print(to_int("123"))
+print(to_int("hello"))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>123
+None</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: multiple except + else + finally</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#finallyCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="finallyCode"><code>def safe_div(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        return "Cannot divide by zero"
+    except TypeError:
+        return "Inputs must be numbers"
+    else:
+        return result
+    finally:
+        # Runs no matter what (useful for cleanup)
+        pass
+
+print(safe_div(10, 2))
+print(safe_div(10, 0))
+print(safe_div("10", 2))</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>5.0
+Cannot divide by zero
+Inputs must be numbers</code></pre>
+              </div>
+            </div>
+
+            <div class="note">
+              <p><strong>Good practice:</strong> catch specific exceptions (like <code>ValueError</code>) instead of a broad <code>except:</code>.</p>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Write a function that asks for a number (or simulates input) and keeps trying until it can convert to <code>int</code>.</li>
+                  <li>Open a file that might not exist and handle <code>FileNotFoundError</code> gracefully.</li>
+                  <li>Raise a <code>ValueError</code> if a function receives a negative number when it shouldn’t.</li>
+                  <li>Write a try/except block that catches <code>KeyError</code> when accessing a dict.</li>
+                  <li>Use <code>finally</code> to print “Done” after a try/except block.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+def get_int():<br>
+    while True:<br>
+        try:<br>
+            val = int(input("Enter a number: "))  # simulate input for testing<br>
+            return val<br>
+        except ValueError:<br>
+            print("Invalid number, try again.")<br><br>
+# 2<br>
+try:<br>
+    with open("missing.txt") as f:<br>
+        print(f.read())<br>
+except FileNotFoundError:<br>
+    print("File not found.")<br><br>
+# 3<br>
+def check_positive(n):<br>
+    if n &lt; 0:<br>
+        raise ValueError("Negative number not allowed")<br><br>
+# 4<br>
+d = {"a": 1}<br>
+try:<br>
+    print(d["b"])<br>
+except KeyError:<br>
+    print("Key not found")<br><br>
+# 5<br>
+try:<br>
+    x = 1 / 0<br>
+except ZeroDivisionError:<br>
+    print("Cannot divide by zero")<br>
+finally:<br>
+    print("Done")
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10 -->
+        <section class="sheet reveal" id="comprehensions" aria-labelledby="compTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="compTitle">10) Comprehensions + useful tools</h3>
+              <p>Write clean transformations with comprehensions and use helpers like <code>zip</code>, <code>enumerate</code>, and <code>any</code>/<code>all</code>.</p>
+            </div>
+            <span class="level">Level: mid → strong</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: list comprehension with condition</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#lcCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="lcCode"><code>nums = [1, 2, 3, 4, 5, 6]
+evens_sq = [n * n for n in nums if n % 2 == 0]
+print(evens_sq)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>[4, 16, 36]</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: dict comprehension</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#dcCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="dcCode"><code>words = ["ant", "bear", "cat"]
+lengths = {w: len(w) for w in words}
+print(lengths)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>{'ant': 3, 'bear': 4, 'cat': 3}</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: zip + enumerate</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#zipCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="zipCode"><code>names = ["Ava", "Ben", "Cy"]
+scores = [10, 7, 10]
+
+for i, (n, s) in enumerate(zip(names, scores), start=1):
+    print(i, n, s)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>1 Ava 10
+2 Ben 7
+3 Cy 10</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: any() / all()</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#anyAllCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="anyAllCode"><code>nums = [2, 4, 6]
+print(any(n % 2 == 1 for n in nums))  # any odd?
+print(all(n % 2 == 0 for n in nums))  # all even?</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>False
+True</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Given <code>words = ["Hi", "there", "PYTHON"]</code>, create a new list of lowercase words longer than 2 characters.</li>
+                  <li>Create a dict mapping numbers 1..5 to their squares.</li>
+                  <li>Use <code>zip</code> to combine two lists into a dict (names → scores).</li>
+                  <li>Use <code>all()</code> to check if all strings in a list are non-empty after stripping.</li>
+                  <li>Use <code>any()</code> to check if any number in a list is negative.</li>
+                </ol>
+
+                <div class="solution">
+# 1<br>
+words = ["Hi", "there", "PYTHON"]<br>
+result = [w.lower() for w in words if len(w) &gt; 2]<br>
+print(result)  # ['there', 'python']<br><br>
+# 2<br>
+squares = {n: n*n for n in range(1, 6)}<br>
+print(squares)<br><br>
+# 3<br>
+names = ["Ann", "Ben", "Cy"]<br>
+scores = [10, 7, 10]<br>
+combined = dict(zip(names, scores))<br>
+print(combined)<br><br>
+# 4<br>
+strings = [" a ", "b", ""]<br>
+print(all(s.strip() for s in strings))  # False<br><br>
+# 5<br>
+nums = [1, -2, 3]<br>
+print(any(n &lt; 0 for n in nums))  # True
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11 -->
+        <section class="sheet reveal" id="oop" aria-labelledby="oopTitle">
+          <div class="sheetHead">
+            <div>
+              <h3 id="oopTitle">11) OOP basics (classes)</h3>
+              <p>Make a small class with state, methods, and a readable string representation.</p>
+            </div>
+            <span class="level">Level: mid</span>
+          </div>
+
+          <div class="sheetBody">
+            <div class="note">
+              <p><strong>When to use a class:</strong> you have data + behavior that belong together (like a “BankAccount” or “TodoList”).</p>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: class with methods</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#classCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="classCode"><code>class Counter:
+    def __init__(self, start=0):
+        self.value = start
+
+    def inc(self, step=1):
+        self.value += step
+        return self.value
+
+    def reset(self):
+        self.value = 0
+
+    def __repr__(self):
+        return f"Counter(value={self.value})"
+
+c = Counter()
+print(c)
+c.inc()
+c.inc(4)
+print(c.value)
+c.reset()
+print(c)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>Counter(value=0)
+5
+Counter(value=0)</code></pre>
+              </div>
+            </div>
+
+            <div class="twoCol">
+              <div class="block">
+                <div class="blockHeader">
+                  <div class="title">Example: @property (clean attribute access)</div>
+                  <div class="tools">
+                    <button class="iconBtn" data-copy="#propCode" type="button">Copy</button>
+                  </div>
+                </div>
+                <pre id="propCode"><code>class Rectangle:
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+
+    @property
+    def area(self):
+        return self.w * self.h
+
+r = Rectangle(3, 4)
+print(r.area)</code></pre>
+              </div>
+
+              <div class="block out">
+                <div class="blockHeader"><div class="title">Expected output</div></div>
+                <pre><code>12</code></pre>
+              </div>
+            </div>
+
+            <div class="block">
+              <div class="blockHeader">
+                <div class="title">Practice (write code)</div>
+                <div class="tools">
+                  <button class="iconBtn" data-toggle="practice" type="button">Show/Hide</button>
+                </div>
+              </div>
+              <div class="practice" hidden>
+                <ol class="qs">
+                  <li>Create a <code>Student</code> class with <code>name</code> and <code>grades</code> (list). Add a method <code>average()</code>.</li>
+                  <li>Add <code>__repr__</code> so printing the object is informative.</li>
+                  <li>Create two students and compare their averages.</li>
+                  <li>Add a property <code>is_passing</code> that returns <code>True</code> if average ≥ 60.</li>
+                  <li>Add a method to add a new grade to the student.</li>
+                </ol>
+
+                <div class="solution">
+class Student:<br>
+    def __init__(self, name, grades):<br>
+        self.name = name<br>
+        self.grades = grades<br><br>
+    def average(self):<br>
+        return sum(self.grades) / len(self.grades) if self.grades else 0<br><br>
+    def __repr__(self):<br>
+        return f"Student({self.name!r}, avg={self.average():.2f})"<br><br>
+    @property<br>
+    def is_passing(self):<br>
+        return self.average() &gt;= 60<br><br>
+    def add_grade(self, grade):<br>
+        self.grades.append(grade)<br><br>
+# Usage<br>
+s1 = Student("Alice", [70, 80, 90])<br>
+s2 = Student("Bob", [50, 55, 60])<br>
+print(s1)<br>
+print(s2)<br>
+print(s1.is_passing, s2.is_passing)<br>
+s2.add_grade(70)<br>
+print(s2.average())
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="reveal">
+    <div class="fine">
+      <strong>How to use this worksheet:</strong> run code, then rewrite it from memory.
+      If something surprises you, inspect with <code>type()</code>, <code>dir()</code>, and <code>help()</code>.
+      Printing and small experiments are how Python “clicks.”
+    </div>
+    <div class="links" aria-label="Footer actions">
+      <a class="btn" href="#start">Back to top</a>
+      <button class="btn" id="btnResetChecks" type="button">Reset checklist</button>
+    </div>
+  </footer>
+
+  <script>
+    const revealEls = Array.from(document.querySelectorAll('.reveal'));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach((el, idx) => {
+      el.style.animationDelay = (idx * 70) + 'ms';
+      io.observe(el);
+    });
+
+    function copyText(sel){
+      const el = document.querySelector(sel);
+      if(!el) return;
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector(`[data-copy="${sel}"]`);
+        if(btn){
+          const old = btn.textContent;
+          btn.textContent = "Copied";
+          setTimeout(() => btn.textContent = old, 900);
+        }
+      }).catch(() => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const selObj = window.getSelection();
+        selObj.removeAllRanges();
+        selObj.addRange(range);
+      });
+    }
+
+    document.addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-copy]');
+      if(b){
+        copyText(b.getAttribute('data-copy'));
+      }
+      const t = ev.target.closest('[data-toggle="practice"]');
+      if(t){
+        const block = t.closest('.block');
+        const practice = block && block.querySelector('.practice');
+        if(practice){
+          practice.hidden = !practice.hidden;
+          t.textContent = practice.hidden ? "Show/Hide" : "Hide";
+        }
+      }
+    });
+
+    const btnExpand = document.getElementById('btnExpand');
+    btnExpand?.addEventListener('click', () => {
+      const pressed = btnExpand.getAttribute('aria-pressed') === 'true';
+      const next = !pressed;
+      btnExpand.setAttribute('aria-pressed', String(next));
+      btnExpand.textContent = next ? "▦ Collapse" : "▦ Expand";
+
+      document.querySelectorAll('.practice').forEach(p => p.hidden = !next);
+      document.querySelectorAll('[data-toggle="practice"]').forEach(b => b.textContent = next ? "Hide" : "Show/Hide");
+    });
+
+    document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
+
+    const checks = Array.from(document.querySelectorAll('#checklist input[type="checkbox"]'));
+    const progressText = document.getElementById('progressText');
+    const STORAGE_KEY = "py_worksheet_checks_v1";
+
+    function renderProgress(){
+      const done = checks.filter(c => c.checked).length;
+      progressText.textContent = `${done} / ${checks.length}`;
+    }
+
+    function saveChecks(){
+      const state = checks.map(c => c.checked ? 1 : 0);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadChecks(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const state = JSON.parse(raw);
+        checks.forEach((c, i) => c.checked = !!state[i]);
+      }catch(e){}
+      renderProgress();
+    }
+
+    checks.forEach(c => c.addEventListener('change', () => {
+      renderProgress();
+      saveChecks();
+    }));
+
+    document.getElementById('btnResetChecks')?.addEventListener('click', () => {
+      checks.forEach(c => c.checked = false);
+      renderProgress();
+      saveChecks();
+    });
+
+    loadChecks();
+    renderProgress();
+  </script>
+</body>
+</html>

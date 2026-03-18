@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Python Worksheet — Novice → Confident (Annotated)</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #fbf6ee; color: #161616; }
+  pre { background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 8px; overflow-x: auto; }
+  .explanation { background: #f0d67a; padding: 12px; margin: 10px 0 30px 0; border-radius: 8px; }
+  h2 { border-bottom: 2px solid #1f4b99; padding-bottom: 5px; }
+  code { font-family: Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<h1>Python Worksheet — Novice → Confident (Annotated)</h1>
+
+<section>
+  <h2>1) Core syntax &amp; built-ins</h2>
+  <pre><code># Define variables with different types
+name = "Alice"  # A string variable holding a name
+fav_num = 7    # An integer variable holding a favorite number
+likes_python = True  # A boolean variable indicating if Python is liked
+
+# Print all variables on one line, separated by spaces
+print(name, fav_num, likes_python)
+
+# Print the type of division results
+print(type(3/2))  # '/' operator does floating point division, result is float
+print(type(3//2)) # '//' operator does integer division (floor), result is int
+
+# Create an empty list
+lst = []
+print(bool(lst))  # Empty list is False in boolean context
+
+# Add an element to the list
+lst.append(42)
+print(bool(lst))  # Now list is not empty, so True
+
+# Assign a value that is considered False in boolean context
+answer = 0  # Other falsey values: "", [], None, False
+print(bool(answer))  # Prints False
+
+# Assign None to a variable (means no value)
+x = None
+print(type(x))  # NoneType is the type of None
+print(bool(x))  # None is also False in boolean context
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    This section introduces variables of different types: strings, integers, and booleans. We print variables and check their types using <code>type()</code>. We also explore how Python treats empty collections and special values like <code>None</code> as <em>False</em> in conditions. This is important because Python uses truthiness to decide if something counts as True or False in if-statements and loops.
+  </div>
+</section>
+
+<section>
+  <h2>2) Strings (the everyday workhorse)</h2>
+  <pre><code>s = "python worksheet"
+
+# Access characters by index (0-based)
+print(s[0])    # First character: 'p'
+print(s[-1])   # Last character: 't'
+
+# Slice substrings: s[start:stop] (stop is exclusive)
+print(s[0:6])  # Characters from index 0 to 5: 'python'
+print(s[7:])   # From index 7 to end: 'worksheet'
+
+# Slice with step: every 2nd character
+print(s[::2])  # 'pto okhet'
+
+# Common string methods
+raw = " Hello, World! "
+clean = raw.strip()  # Remove spaces from start and end
+
+print(clean.lower())  # Convert to lowercase
+print(clean.upper())  # Convert to uppercase
+print(clean.replace("World", "Python"))  # Replace substring
+print(clean.startswith("Hello"), clean.endswith("!"))  # Check start and end
+
+# Split string into list by comma, then strip spaces
+line = "apples, bananas, cherries"
+parts = [p.strip() for p in line.split(",")]
+print(parts)  # List of fruits
+
+# Join list back into a string separated by commas
+csv_again = ", ".join(parts)
+print(csv_again)
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Strings are sequences of characters. You can access individual characters by index or get substrings using slicing. Python strings have many useful methods like <code>strip()</code> to clean whitespace, <code>lower()</code> and <code>upper()</code> to change case, and <code>replace()</code> to substitute parts of the string. Splitting breaks a string into a list, and joining combines a list into a string. These are everyday tools for text processing.
+  </div>
+</section>
+
+<section>
+  <h2>3) Numbers</h2>
+  <pre><code>a = 17
+b = 5
+
+# Floating point division (result is float)
+print(a / b)  # 3.4
+
+# Integer division (floor division, result is int)
+print(a // b)  # 3
+
+# Modulo operator gives remainder
+print(a % b)  # 2
+
+# divmod returns quotient and remainder as a tuple
+print(divmod(a, b))  # (3, 2)
+
+# List of numbers for aggregate functions
+nums = [2.3, 2.6, 2.5, 9.1]
+
+# Round to 2 decimal places (note floating point quirks)
+print(round(2.675, 2))  # 2.67 (may vary slightly)
+
+# Minimum and maximum values in list
+print(min(nums), max(nums))  # 2.3 9.1
+
+# Sum of all numbers
+print(sum(nums))  # 16.5
+
+# Rounded sum
+print(round(sum(nums), 2))  # 16.5
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    This section covers different types of division in Python: floating point division with <code>/</code> and integer division with <code>//</code>. The modulo operator <code>%</code> gives the remainder. The <code>divmod()</code> function returns both quotient and remainder. We also use built-in functions like <code>round()</code>, <code>min()</code>, <code>max()</code>, and <code>sum()</code> to work with lists of numbers. Note that floating point numbers can have small precision issues.
+  </div>
+</section>
+
+<section>
+  <h2>4) Control flow (if / for / while)</h2>
+  <pre><code>score = 87
+
+# Conditional branching with if, elif, else
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "D or below"
+
+print(grade)
+
+items = ["pen", "pencil", "eraser"]
+
+# For loop with enumerate to get index and item
+for i, item in enumerate(items, start=1):
+    print(i, item)
+
+# For loop with range to iterate numbers
+for n in range(3):
+    print("n =", n)
+
+n = 0
+
+# While loop with break and continue
+while n < 10:
+    n += 1
+    if n % 2 == 1:
+        continue  # Skip odd numbers
+    print(n)
+    if n == 6:
+        break  # Exit loop when n is 6
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    This section shows how to control the flow of your program. Use <code>if</code>, <code>elif</code>, and <code>else</code> to make decisions. Use <code>for</code> loops to iterate over lists or ranges of numbers. The <code>enumerate()</code> function helps get both the index and the item. Use <code>while</code> loops to repeat actions while a condition is true. The <code>continue</code> statement skips the current loop iteration, and <code>break</code> exits the loop early.
+  </div>
+</section>
+
+<section>
+  <h2>5) Data structures: list, tuple, set, dict</h2>
+  <pre><code>nums = [3, 1, 4]
+
+# Add elements to list
+nums.append(1)          # Add single element at end
+nums.extend([5, 9])     # Add multiple elements
+
+print(nums)
+
+# Slice first 3 elements
+print(nums[:3])
+
+# Remove first occurrence of 1
+nums.remove(1)
+print(nums)
+
+# Sort list in place
+nums.sort()
+print(nums)
+
+# Tuple unpacking
+point = (10, 25)
+x, y = point
+print(x, y)
+
+# Star unpacking to capture middle elements
+a, *middle, b = [1, 2, 3, 4, 5]
+print(a, middle, b)
+
+# Sets store unique elements
+a = {1, 2, 3, 3}  # Duplicate 3 removed
+b = {3, 4, 5}
+
+print(a)        # {1, 2, 3}
+print(a | b)    # Union: {1, 2, 3, 4, 5}
+print(a & b)    # Intersection: {3}
+print(a - b)    # Difference: {1, 2}
+
+# Dictionaries map keys to values
+student = {"name": "Mina", "grade": 8}
+
+print(student["name"])  # Access by key
+print(student.get("age", "unknown"))  # Safe lookup with default
+
+student["grade"] = 9
+student.update({"club": "Robotics"})
+
+for k, v in student.items():
+    print(k, "=>", v)
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Lists are ordered collections you can change (mutable). You can add, remove, slice, and sort them. Tuples are ordered but cannot be changed (immutable). Sets store unique items and support mathematical operations like union and intersection. Dictionaries store key-value pairs for fast lookups. Use <code>.get()</code> to avoid errors when a key might be missing. Looping over dictionaries with <code>.items()</code> gives keys and values.
+  </div>
+</section>
+
+<section>
+  <h2>6) Functions</h2>
+  <pre><code>def area_rect(w, h):
+    # Calculate area of rectangle
+    return w * h
+
+print(area_rect(3, 4))
+print(area_rect(w=5, h=2))
+
+def greet(name, punctuation="!"):
+    """Return a friendly greeting."""
+    return f"Hello, {name}{punctuation}"
+
+print(greet("Rae"))
+print(greet("Rae", punctuation="."))
+
+def summarize(*nums, label="sum"):
+    total = sum(nums)
+    return f"{label}: {total}"
+
+print(summarize(1, 2, 3))
+print(summarize(10, 20, label="total"))
+
+def show_profile(**info):
+    for k, v in info.items():
+        print(k, ":", v)
+
+show_profile(name="Noor", city="Austin", hobby="chess")
+
+words = ["pear", "fig", "pineapple", "kiwi"]
+
+# Sort words by length using a lambda function
+by_len = sorted(words, key=lambda w: len(w))
+print(by_len)
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Functions let you group reusable code. You define parameters and return values. You can give default values to parameters. The <code>*args</code> syntax collects extra positional arguments as a tuple, and <code>**kwargs</code> collects extra keyword arguments as a dictionary. Lambda functions are small anonymous functions useful for short operations like sorting by a custom key.
+  </div>
+</section>
+
+<section>
+  <h2>7) Modules (import)</h2>
+  <pre><code>import math
+import random as rnd
+
+print(math.sqrt(81))          # Square root of 81
+print(round(math.pi, 4))      # Pi rounded to 4 decimals
+print(rnd.choice(["rock", "paper", "scissors"]))  # Random choice
+
+from datetime import date
+
+today = date.today()
+print(today.year, today.month, today.day)
+
+def main():
+    print("This runs when the file is executed directly.")
+
+if __name__ == "__main__":
+    main()
+
+import statistics
+nums = [1, 2, 3, 4, 5]
+print(statistics.mean(nums))  # Mean of numbers
+
+import random
+for _ in range(10):
+    print(random.randint(1, 6))  # Simulate dice rolls
+
+from datetime import datetime
+print(datetime.now())  # Current date and time
+
+import math
+print(math.factorial(5))  # 5 factorial (120)
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Modules are libraries of code you can import to use extra functions. Use <code>import</code> to bring in modules, optionally with an alias. You can import specific parts with <code>from ... import ...</code>. The <code>__name__ == "__main__"</code> guard lets you run code only when the script is executed directly. Common modules include <code>math</code>, <code>random</code>, <code>datetime</code>, and <code>statistics</code>.
+  </div>
+</section>
+
+<section>
+  <h2>8) Files (read/write)</h2>
+  <pre><code>lines = ["apples", "bananas", "cherries"]
+
+# Write lines to a text file safely using 'with'
+with open("fruits.txt", "w", encoding="utf-8") as f:
+    for item in lines:
+        f.write(item + "\n")  # Write each item with a newline
+
+# Read entire file content
+with open("fruits.txt", "r", encoding="utf-8") as f:
+    text = f.read()
+print(text)
+
+# Read lines into a list, stripping whitespace
+with open("fruits.txt", "r", encoding="utf-8") as f:
+    fruits = [line.strip() for line in f]
+print(fruits)
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Use <code>with open(...)</code> to open files safely; it ensures files are closed automatically. Use mode <code>"w"</code> to write (overwriting existing content) and <code>"r"</code> to read. When writing, add newline characters to separate lines. When reading, you can read the whole file as a string or read line-by-line into a list, cleaning each line with <code>strip()</code>.
+  </div>
+</section>
+
+<section>
+  <h2>9) Errors &amp; exceptions</h2>
+  <pre><code>def to_int(text):
+    try:
+        return int(text)  # Try to convert text to integer
+    except ValueError:
+        return None  # Return None if conversion fails
+
+print(to_int("123"))
+print(to_int("hello"))
+
+def safe_div(a, b):
+    try:
+        result = a / b  # Try division
+    except ZeroDivisionError:
+        return "Cannot divide by zero"
+    except TypeError:
+        return "Inputs must be numbers"
+    else:
+        return result  # Return result if no exceptions
+    finally:
+        # This block runs no matter what (cleanup)
+        pass
+
+print(safe_div(10, 2))
+print(safe_div(10, 0))
+print(safe_div("10", 2))
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Errors can happen during program execution. Use <code>try</code> and <code>except</code> blocks to catch and handle errors gracefully. Catch specific exceptions like <code>ValueError</code> or <code>ZeroDivisionError</code> to respond appropriately. The <code>else</code> block runs if no error occurs, and <code>finally</code> always runs, useful for cleanup tasks.
+  </div>
+</section>
+
+<section>
+  <h2>10) Comprehensions + useful tools</h2>
+  <pre><code>nums = [1, 2, 3, 4, 5, 6]
+
+# List comprehension with condition: squares of even numbers
+evens_sq = [n * n for n in nums if n % 2 == 0]
+print(evens_sq)
+
+words = ["ant", "bear", "cat"]
+
+# Dictionary comprehension: word lengths
+lengths = {w: len(w) for w in words}
+print(lengths)
+
+names = ["Ava", "Ben", "Cy"]
+scores = [10, 7, 10]
+
+# Zip and enumerate to loop over two lists with index
+for i, (n, s) in enumerate(zip(names, scores), start=1):
+    print(i, n, s)
+
+nums = [2, 4, 6]
+
+# any() checks if any element matches condition
+print(any(n % 2 == 1 for n in nums))  # Any odd number?
+
+# all() checks if all elements match condition
+print(all(n % 2 == 0 for n in nums))  # All even numbers?
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Comprehensions provide a concise way to create lists or dictionaries from existing iterables, optionally filtering with conditions. The <code>zip()</code> function pairs elements from multiple lists. <code>enumerate()</code> adds an index to loops. <code>any()</code> and <code>all()</code> check if any or all elements satisfy a condition, useful for quick checks.
+  </div>
+</section>
+
+<section>
+  <h2>11) OOP basics (classes)</h2>
+  <pre><code>class Counter:
+    def __init__(self, start=0):
+        # Initialize counter value
+        self.value = start
+
+    def inc(self, step=1):
+        # Increase counter by step (default 1)
+        self.value += step
+        return self.value
+
+    def reset(self):
+        # Reset counter to zero
+        self.value = 0
+
+    def __repr__(self):
+        # String representation for printing
+        return f"Counter(value={self.value})"
+
+c = Counter()
+print(c)      # Counter(value=0)
+c.inc()       # Increment by 1
+c.inc(4)      # Increment by 4
+print(c.value)  # Current value: 5
+c.reset()     # Reset counter
+print(c)      # Counter(value=0)
+
+class Rectangle:
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+
+    @property
+    def area(self):
+        # Calculate area as property (access like attribute)
+        return self.w * self.h
+
+r = Rectangle(3, 4)
+print(r.area)  # 12
+</code></pre>
+  <div class="explanation">
+    <strong>Explanation:</strong><br />
+    Object-Oriented Programming (OOP) lets you create classes that bundle data (attributes) and behavior (methods). The <code>__init__</code> method initializes new objects. Methods like <code>inc()</code> and <code>reset()</code> define actions. The <code>@property</code> decorator lets you access methods like attributes for cleaner code. The <code>__repr__</code> method defines how objects are printed.
+  </div>
+</section>
+
+<section>
+  <h2>How to use this worksheet</h2>
+  <p>Run the code, then rewrite it from memory. If something surprises you, inspect with <code>type()</code>, <code>dir()</code>, and <code>help()</code>. Printing and small experiments are how Python “clicks.”</p>
+</section>
+
+</body>
+</html>
