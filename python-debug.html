@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intermediate Python Debugging Worksheet — Integrated PDF</title>
+  <meta name="description" content="Printable intermediate Python debugging worksheet with worked examples + beginner explanations, plus a separate answer key with explanations. Export to PDF." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --ink: #eaf0ff;
+      --muted: rgba(234,240,255,.72);
+      --faint: rgba(234,240,255,.12);
+
+      --accent: #a6ffcb;  /* mint */
+      --accent2:#ffb3d9;  /* rose */
+      --accent3:#b8c6ff;  /* periwinkle */
+      --warn:  #ffd7a6;
+
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      --serif:"Fraunces", ui-serif, Georgia, serif;
+
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 26px;
+      --max: 1120px;
+
+      --s0: clamp(.74rem, .64rem + .28vw, .92rem);
+      --s1: clamp(.9rem, .78rem + .36vw, 1.05rem);
+      --s2: clamp(1.02rem, .84rem + .55vw, 1.18rem);
+      --s3: clamp(1.18rem, .98rem + .86vw, 1.48rem);
+      --s4: clamp(1.5rem, 1.08rem + 1.25vw, 2.0rem);
+      --s5: clamp(2.25rem, 1.4rem + 2.85vw, 3.45rem);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 800px at 10% 5%, rgba(166,255,203,.18), transparent 60%),
+        radial-gradient(900px 650px at 95% 18%, rgba(255,179,217,.13), transparent 58%),
+        radial-gradient(800px 600px at 65% 110%, rgba(184,198,255,.12), transparent 60%),
+        linear-gradient(180deg, #070a0f 0%, #0a0f16 35%, #070a0f 100%);
+      overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity:.16;
+      mask-image: radial-gradient(1100px 700px at 50% 10%, #000 40%, transparent 72%);
+      z-index:0;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      padding: clamp(18px, 2.5vw, 36px);
+      padding-bottom: 72px;
+    }
+
+    header{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 22px 0 12px;
+      display:flex;
+      flex-direction:column;
+      gap: 16px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      min-width: 280px;
+    }
+    .mark{
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(166,255,203,.95), transparent 60%),
+        radial-gradient(18px 18px at 72% 30%, rgba(255,179,217,.8), transparent 65%),
+        radial-gradient(22px 22px at 55% 78%, rgba(184,198,255,.9), transparent 65%),
+        linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
+      box-shadow: 0 14px 35px rgba(0,0,0,.45);
+      position:relative;
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .mark::after{
+      content:"";
+      position:absolute;
+      inset:-40%;
+      background: conic-gradient(from 120deg, rgba(166,255,203,.35), rgba(255,179,217,.25), rgba(184,198,255,.25), rgba(166,255,203,.35));
+      filter: blur(22px);
+      opacity:.55;
+      transform: rotate(12deg);
+    }
+    .brand h1{
+      margin:0;
+      font-family: var(--serif);
+      letter-spacing: -0.02em;
+      font-size: clamp(1.05rem, .85rem + .9vw, 1.38rem);
+      line-height: 1.05;
+    }
+    .brand p{
+      margin:.2rem 0 0;
+      color: var(--muted);
+      font-size: var(--s0);
+      line-height: 1.35;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+      margin-left:auto;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: var(--s0);
+      font-weight: 800;
+      letter-spacing:.01em;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.085);
+      border-color: rgba(255,255,255,.24);
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(166,255,203,.22), rgba(255,255,255,.06));
+      border-color: rgba(166,255,203,.35);
+    }
+    .btn.primary:hover{
+      border-color: rgba(166,255,203,.55);
+      background: linear-gradient(180deg, rgba(166,255,203,.30), rgba(255,255,255,.07));
+    }
+    .btn .icon{ width:18px; height:18px; }
+
+    .hero{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px 0 10px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .glass{
+      border-radius: var(--radius2);
+      background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.028));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+    .heroCard{
+      padding: clamp(18px, 2.2vw, 28px);
+      position:relative;
+    }
+    .heroCard::before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background:
+        radial-gradient(540px 260px at 18% 0%, rgba(166,255,203,.18), transparent 60%),
+        radial-gradient(500px 280px at 84% 10%, rgba(255,179,217,.14), transparent 62%),
+        radial-gradient(580px 360px at 55% 120%, rgba(184,198,255,.12), transparent 60%);
+      opacity:.9;
+      z-index:0;
+    }
+    .heroCard > *{ position:relative; z-index:1; }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(234,240,255,.84);
+      font-size: var(--s0);
+      letter-spacing:.02em;
+      width: fit-content;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(166,255,203,.12);
+    }
+    .hero h2{
+      margin: 12px 0 8px;
+      font-family: var(--serif);
+      letter-spacing: -0.03em;
+      font-size: var(--s5);
+      line-height: 1.02;
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-size: var(--s2);
+      line-height: 1.65;
+      max-width: 75ch;
+    }
+
+    .sideCard{ padding: clamp(16px, 2vw, 24px); display:flex; flex-direction:column; gap: 14px; }
+    .sideCard h3{ margin:0; font-family: var(--serif); font-size: clamp(1.15rem, 1rem + .6vw, 1.35rem); letter-spacing:-0.02em; line-height:1.1; }
+    .sideCard ul{ margin:0; padding-left: 18px; color: var(--muted); line-height:1.65; font-size: var(--s0); }
+    .sideCard li{ margin: 6px 0; }
+
+    main{ max-width: var(--max); margin: 0 auto; padding: 12px 0 0; }
+    .paper{ border-radius: var(--radius2); }
+    .paperHeader{
+      padding: 18px clamp(18px, 2.2vw, 30px);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      background:
+        radial-gradient(560px 260px at 15% 0%, rgba(166,255,203,.12), transparent 60%),
+        radial-gradient(560px 280px at 80% 0%, rgba(255,179,217,.10), transparent 62%);
+    }
+    .paperHeader h3{ margin:0; font-family: var(--serif); font-size: var(--s4); letter-spacing:-0.02em; line-height:1.08; }
+    .paperHeader .sub{ margin: 6px 0 0; color: var(--muted); font-size: var(--s0); max-width: 84ch; line-height: 1.55; }
+
+    .toggle{
+      display:flex; align-items:center; gap: 10px;
+      padding: 8px 10px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+    }
+    .toggle label{ font-size: var(--s0); color: rgba(234,240,255,.88); font-weight: 900; letter-spacing:.01em; }
+    .switch{
+      position:relative; width: 44px; height: 26px; border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .knob{
+      position:absolute; top:50%; left:3px;
+      width:20px; height:20px; border-radius:999px;
+      transform: translateY(-50%);
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.62));
+      box-shadow: 0 10px 18px rgba(0,0,0,.35);
+      transition: left .2s ease, background .2s ease;
+    }
+    .switch[data-on="true"]{ background: rgba(166,255,203,.22); border-color: rgba(166,255,203,.35); }
+    .switch[data-on="true"] .knob{ left:21px; background: linear-gradient(180deg, rgba(166,255,203,.95), rgba(166,255,203,.55)); }
+
+    .content{ padding: clamp(18px, 2.2vw, 30px); display:grid; gap: 22px; }
+    .section{
+      padding: 18px 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.16);
+      border-radius: 18px;
+    }
+    .sectionHeader{
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap: 14px; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .sectionHeader h4{
+      margin:0; font-family: var(--serif);
+      letter-spacing:-0.02em;
+      font-size: clamp(1.15rem, 1.0rem + .7vw, 1.6rem);
+      line-height: 1.1;
+    }
+    .tag{
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(234,240,255,.78);
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      border-radius: 999px;
+      padding: 7px 10px;
+    }
+    .section p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: var(--s2);
+    }
+
+    .grid{ display:grid; grid-template-columns: 1fr; gap: 14px; }
+
+    .codeblock{
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    .codehead{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      gap: 10px;
+    }
+    .label{
+      display:flex; align-items:center; gap: 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: rgba(234,240,255,.82);
+    }
+    .lights{ display:flex; gap:7px; align-items:center; }
+    .light{ width:9px; height:9px; border-radius:999px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.14); }
+    .light.red{ background: rgba(255,179,217,.55); border-color: rgba(255,179,217,.35); }
+    .light.yel{ background: rgba(255,215,166,.50); border-color: rgba(255,215,166,.28); }
+    .light.grn{ background: rgba(166,255,203,.48); border-color: rgba(166,255,203,.28); }
+
+    pre{
+      margin:0;
+      padding: 14px;
+      overflow:auto;
+      font-family: var(--mono);
+      font-size: clamp(.84rem, .76rem + .25vw, .96rem);
+      line-height: 1.6;
+      color: rgba(234,240,255,.92);
+      tab-size: 4;
+      white-space: pre;
+    }
+
+    .explain{
+      border-left: 3px solid rgba(184,198,255,.75);
+      background: rgba(184,198,255,.06);
+      border-radius: 14px;
+      padding: 12px 12px;
+      color: rgba(234,240,255,.9);
+      font-size: var(--s1);
+      line-height: 1.78;
+    }
+    .explain strong{ color: var(--ink); }
+    .explain code{ font-family: var(--mono); font-weight: 650; }
+    .explain ul, .explain ol{ margin: .5rem 0 .2rem 1.25rem; padding: 0; color: rgba(234,240,255,.86); }
+    .explain li{ margin: .2rem 0; }
+
+    .callout{
+      border-left: 3px solid rgba(166,255,203,.75);
+      background: rgba(166,255,203,.06);
+      border-radius: 12px;
+      padding: 12px 12px;
+      color: rgba(234,240,255,.9);
+      font-size: var(--s0);
+      line-height: 1.65;
+    }
+
+    .hr{ height:1px; background: rgba(255,255,255,.12); border:0; margin: 16px 0 10px; }
+    .pageBreak{ break-before: page; page-break-before: always; }
+
+    footer{
+      max-width: var(--max);
+      margin: 18px auto 0;
+      color: rgba(234,240,255,.58);
+      font-size: var(--s0);
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 10px 2px 0;
+    }
+
+    [data-reveal]{ opacity:0; transform: translateY(10px); animation: reveal .65s ease forwards; }
+    [data-reveal="1"]{ animation-delay: .05s; }
+    [data-reveal="2"]{ animation-delay: .12s; }
+    [data-reveal="3"]{ animation-delay: .19s; }
+    @keyframes reveal{ to{ opacity:1; transform: translateY(0); } }
+
+    @media (max-width: 980px){ .hero{ grid-template-columns:1fr; } }
+
+    body[data-show-answers="false"] .answersOnly{ display:none; }
+    body[data-show-answers="true"] .worksheetOnly{ display:none; }
+
+    @media print{
+      :root{ --ink:#0b1220; --muted: rgba(11,18,32,.72); }
+      body{ background:#fff !important; color: var(--ink) !important; }
+      body::before{ display:none !important; }
+      .wrap{ padding:0; }
+      header, .hero, footer{ display:none !important; }
+      .glass{ box-shadow:none !important; border:none !important; border-radius:0 !important; background: transparent !important; }
+      .paperHeader{ background:none !important; border-bottom: 1px solid rgba(0,0,0,.14) !important; }
+      .toggle{ display:none !important; }
+      .section{ background: transparent !important; border: 1px solid rgba(0,0,0,.12) !important; }
+      .codeblock{ background: transparent !important; border: 1px solid rgba(0,0,0,.12) !important; }
+      .codehead{ background: transparent !important; border-bottom: 1px solid rgba(0,0,0,.10) !important; }
+      pre{ color:#0b1220 !important; }
+      .explain, .callout{
+        background: transparent !important;
+        border-left-color: rgba(0,0,0,.35) !important;
+        color: rgba(11,18,32,.92) !important;
+      }
+      [data-reveal]{ opacity:1 !important; transform:none !important; animation:none !important; }
+      @page{ margin: 14mm; }
+    }
+  </style>
+</head>
+
+<body data-show-answers="false">
+  <div class="wrap">
+    <header>
+      <div class="topbar" data-reveal="1">
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div>
+            <h1>Intermediate Python Debugging Worksheet</h1>
+            <p>Worked examples include beginner explanations. Answer Key includes fixes + deeper explanations. Export to PDF.</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="toggleAnswersBtn" type="button" aria-pressed="false" title="Toggle between Worksheet and Answer Key">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Toggle Answers
+          </button>
+          <button class="btn primary" id="exportBtn" type="button" title="Save as PDF (uses your browser print dialog)">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 8V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M7 17h10v4H7v-4Z" stroke="currentColor" stroke-width="2" />
+              <path d="M6 9h12a3 3 0 0 1 3 3v3H3v-3a3 3 0 0 1 3-3Z" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Export PDF
+          </button>
+        </div>
+      </div>
+
+      <section class="hero" aria-label="Overview">
+        <div class="glass heroCard" data-reveal="2">
+          <div class="kicker"><span class="dot" aria-hidden="true"></span> Printable • classroom-ready • explanations included</div>
+          <h2>Debugging is reading + reasoning.</h2>
+          <p>
+            Students often feel like errors are “random”. They aren’t. Most bugs follow a small set of patterns:
+            missing colons, indentation blocks, type mismatches, and loops that never change.
+            This worksheet makes those patterns obvious.
+          </p>
+        </div>
+
+        <aside class="glass sideCard" data-reveal="3">
+          <h3>PDF workflow</h3>
+          <ul>
+            <li>Print “Worksheet” first.</li>
+            <li>Toggle to “Answer Key” and print again (separate packet).</li>
+            <li>In Print settings, enable <strong>Background graphics</strong>.</li>
+          </ul>
+          <div class="callout"><strong>Tip:</strong> Encourage students to write the error type (SyntaxError, IndentationError, TypeError, etc.) before fixing.</div>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <article class="glass paper" aria-label="Printable content">
+        <div class="paperHeader">
+          <div>
+            <h3 id="docTitle">Worksheet</h3>
+            <p class="sub" id="docSub">Fix each snippet so it runs and matches the intended behavior. Then explain what changed and why.</p>
+          </div>
+
+          <div class="toggle" aria-label="View toggle">
+            <label for="viewSwitch">Answer Key</label>
+            <div class="switch" id="viewSwitch" role="switch" aria-checked="false" tabindex="0" data-on="false">
+              <div class="knob" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content">
+          <!-- WORKED EXAMPLES WITH LONG EXPLANATIONS -->
+          <section class="section worksheetOnly" aria-label="Part 1 Worked Examples">
+            <div class="sectionHeader">
+              <h4>Part 1 — Worked examples (with beginner-friendly explanations)</h4>
+              <div class="tag">Reference</div>
+            </div>
+            <p>
+              Read each broken snippet. Try to predict the error message. Then read the fix and explanation.
+              The goal is to learn the “shape” of common Python mistakes.
+            </p>
+
+            <!-- Example 1 -->
+            <div class="grid" aria-label="Example 1">
+              <div class="codeblock">
+                <div class="codehead">
+                  <div class="label">
+                    <span class="lights" aria-hidden="true"><span class="light red"></span><span class="light yel"></span><span class="light grn"></span></span>
+                    Example 1 — Missing colon
+                  </div>
+                </div>
+                <pre><code># Code that doesn't work:
+def greet(name)
+    print("Hello, " + name)
+
+greet("Alice")</code></pre>
+              </div>
+
+              <div class="codeblock">
+                <div class="codehead"><div class="label">Fixed</div></div>
+                <pre><code>def greet(name):
+    print("Hello, " + name)
+
+greet("Alice")</code></pre>
+              </div>
+
+              <div class="explain">
+                <strong>Why the original breaks:</strong> In Python, a colon (<code>:</code>) is required after any line that starts a new
+                <em>block</em> of code—like a function (<code>def</code>), a loop (<code>for</code>/<code>while</code>), or a conditional (<code>if</code>).
+                Without the colon, Python can’t tell where the “header” ends and the indented block begins, so it raises a <code>SyntaxError</code>.
+                <br><br>
+                <strong>Why the fix works:</strong> Adding <code>:</code> tells Python, “the next indented lines belong to this function.”
+                The indented <code>print</code> becomes the function body, and calling <code>greet("Alice")</code> runs that body.
+              </div>
+            </div>
+
+            <hr class="hr"/>
+
+            <!-- Example 2 -->
+            <div class="grid" aria-label="Example 2">
+              <div class="codeblock">
+                <div class="codehead">
+                  <div class="label">
+                    <span class="lights" aria-hidden="true"><span class="light red"></span><span class="light yel"></span><span class="light grn"></span></span>
+                    Example 2 — Indentation
+                  </div>
+                </div>
+                <pre><code># Code that doesn't work:
+for i in range(5):
+print(i)</code></pre>
+              </div>
+
+              <div class="codeblock">
+                <div class="codehead"><div class="label">Fixed</div></div>
+                <pre><code>for i in range(5):
+    print(i)</code></pre>
+              </div>
+
+              <div class="explain">
+                <strong>Why the original breaks:</strong> Python uses indentation (leading spaces) to show which lines belong inside a block.
+                After <code>for i in range(5):</code>, Python expects an indented “loop body”. Because <code>print(i)</code> is not indented,
+                Python doesn’t know what to do next and raises an <code>IndentationError</code> (or complains it expected an indented block).
+                <br><br>
+                <strong>Why the fix works:</strong> Indenting <code>print(i)</code> tells Python it is part of the loop body, so it runs once per iteration.
+                This is why Python code style matters: indentation is not just pretty formatting—it's part of the language.
+              </div>
+            </div>
+
+            <hr class="hr"/>
+
+            <!-- Example 3 -->
+            <div class="grid" aria-label="Example 3">
+              <div class="codeblock">
+                <div class="codehead">
+                  <div class="label">
+                    <span class="lights" aria-hidden="true"><span class="light red"></span><span class="light yel"></span><span class="light grn"></span></span>
+                    Example 3 — Variable used before assignment
+                  </div>
+                </div>
+                <pre><code># Code that doesn't work:
+print(x)
+x = 10</code></pre>
+              </div>
+
+              <div class="codeblock">
+                <div class="codehead"><div class="label">Fixed</div></div>
+                <pre><code>x = 10
+print(x)</code></pre>
+              </div>
+
+              <div class="explain">
+                <strong>Why the original breaks:</strong> A variable name like <code>x</code> only “exists” after you assign something to it.
+                In the broken code, Python reaches <code>print(x)</code> first, but <code>x</code> has not been defined yet—so Python raises a <code>NameError</code>.
+                <br><br>
+                <strong>Why the fix works:</strong> By assigning <code>x = 10</code> first, you create the variable in memory.
+                Then when you print it, Python knows what <code>x</code> refers to.
+                <br><br>
+                <strong>Beginner habit:</strong> When you see a <code>NameError</code>, check spelling and check whether the variable is defined before use.
+              </div>
+            </div>
+
+            <hr class="hr"/>
+
+            <!-- Example 4 -->
+            <div class="grid" aria-label="Example 4">
+              <div class="codeblock">
+                <div class="codehead">
+                  <div class="label">
+                    <span class="lights" aria-hidden="true"><span class="light red"></span><span class="light yel"></span><span class="light grn"></span></span>
+                    Example 4 — TypeError (string + int)
+                  </div>
+                </div>
+                <pre><code># Code that doesn't work:
+age = 25
+print("I am " + age + " years old.")</code></pre>
+              </div>
+
+              <div class="codeblock">
+                <div class="codehead"><div class="label">Fixed (recommended)</div></div>
+                <pre><code>age = 25
+print(f"I am {age} years old.")</code></pre>
+              </div>
+
+              <div class="explain">
+                <strong>Why the original breaks:</strong> The <code>+</code> operator can concatenate strings, but only if both sides are strings.
+                Here, <code>age</code> is an integer, so Python refuses to guess how to combine text and numbers and raises a <code>TypeError</code>.
+                <br><br>
+                <strong>Why the fix works:</strong> An f-string (<code>f"..."</code>) is a safe way to build strings. Anything inside <code>{}</code>
+                is evaluated and converted to text for you. That means you can insert numbers, variables, or even expressions without manual <code>str(...)</code> calls.
+                <br><br>
+                <strong>Alternative fix:</strong> <code>"I am " + str(age) + " years old."</code> (works, but is more cluttered).
+              </div>
+            </div>
+
+            <hr class="hr"/>
+
+            <!-- Example 5 -->
+            <div class="grid" aria-label="Example 5">
+              <div class="codeblock">
+                <div class="codehead">
+                  <div class="label">
+                    <span class="lights" aria-hidden="true"><span class="light red"></span><span class="light yel"></span><span class="light grn"></span></span>
+                    Example 5 — Infinite loop (missing increment)
+                  </div>
+                </div>
+                <pre><code># Code that doesn't work (never stops):
+i = 0
+while i &lt; 5:
+    print(i)</code></pre>
+              </div>
+
+              <div class="codeblock">
+                <div class="codehead"><div class="label">Fixed</div></div>
+                <pre><code>i = 0
+while i &lt; 5:
+    print(i)
+    i += 1</code></pre>
+              </div>
+
+              <div class="explain">
+                <strong>Why the original breaks (or “hangs”):</strong> A <code>while</code> loop keeps running as long as its condition is true.
+                The condition here is <code>i &lt; 5</code>. But notice: inside the loop, <code>i</code> never changes, so it stays at 0 forever.
+                That means the condition stays true forever, so the program never reaches the end (an infinite loop).
+                <br><br>
+                <strong>Why the fix works:</strong> <code>i += 1</code> increases <code>i</code> each time the loop runs.
+                Eventually <code>i</code> becomes 5, making <code>i &lt; 5</code> false, and the loop stops.
+                <br><br>
+                <strong>Beginner check:</strong> For every <code>while</code> loop, ask: “What changes each iteration so the condition can become false?”
+              </div>
+            </div>
+          </section>
+
+          <!-- EXERCISES -->
+          <section class="section worksheetOnly" aria-label="Part 2 Exercises">
+            <div class="sectionHeader">
+              <h4>Part 2 — Exercises (fix the code)</h4>
+              <div class="tag">Student work</div>
+            </div>
+            <p>
+              For each exercise: (1) predict the error or wrong behavior, (2) fix it with the smallest change, (3) run it.
+            </p>
+
+            <div class="grid">
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 1</div></div>
+                <pre><code>def calculate_area(radius)
+    area = 3.14 * radius ** 2
+    return area
+
+print(calculate_area(5))</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 2</div></div>
+                <pre><code>numbers = [1, 2, 3, 4, 5]
+for num in numbers
+    print(num * 2)</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 3</div></div>
+                <pre><code>def greet_user(name):
+print("Welcome, " + name)
+
+greet_user("John")</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 4</div></div>
+                <pre><code>count = 10
+while count &gt; 0:
+    print(count)</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 5</div></div>
+                <pre><code>name = "Emma"
+print("Hello " + name + 5)</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 6</div></div>
+                <pre><code>def find_max(numbers):
+    max_num = numbers[0]
+    for num in numbers:
+    if num &gt; max_num:
+        max_num = num
+    return max_num
+
+print(find_max([3, 7, 2, 9, 5]))</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 7</div></div>
+                <pre><code>my_dict = {"a": 1, "b": 2, "c": 3}
+print(my_dict["d"])</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 8</div></div>
+                <pre><code>def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+print(factorial(5))</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 9</div></div>
+                <pre><code>for i in range(1, 10):
+    if i % 2 = 0:
+        print(f"{i} is even")</code></pre>
+              </div>
+
+              <div class="codeblock"><div class="codehead"><div class="label">Exercise 10</div></div>
+                <pre><code>def add_items_to_list(item, my_list=[]):
+    my_list.append(item)
+    return my_list
+
+print(add_items_to_list(1))
+print(add_items_to_list(2))</code></pre>
+              </div>
+            </div>
+
+            <div class="callout" style="margin-top:14px; border-left-color: rgba(255,215,166,.8); background: rgba(255,215,166,.06);">
+              <strong>Optional:</strong> For Exercise 7, write two fixes: one with <code>dict.get</code> and one with <code>try/except</code>.
+            </div>
+          </section>
+
+          <!-- ANSWER KEY -->
+          <section class="section answersOnly pageBreak" aria-label="Answer Key">
+            <div class="sectionHeader">
+              <h4>Answer Key — Fixes + beginner-friendly explanations</h4>
+              <div class="tag">Instructor</div>
+            </div>
+            <p>Each answer includes corrected code and an explanation of what went wrong and why the fix works.</p>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 1</div></div>
+              <pre><code>def calculate_area(radius):
+    area = 3.14 * radius ** 2
+    return area
+
+print(calculate_area(5))</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> Function headers must end in <code>:</code>. The colon starts the indented function block. Without it, Python raises a <code>SyntaxError</code>.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 2</div></div>
+              <pre><code>numbers = [1, 2, 3, 4, 5]
+for num in numbers:
+    print(num * 2)</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> A <code>for</code> loop needs a colon, and its body must be indented. Indentation defines the loop block (what repeats each iteration).</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 3</div></div>
+              <pre><code>def greet_user(name):
+    print("Welcome, " + name)
+
+greet_user("John")</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> The function body must be indented. Without indentation, Python can’t tell which lines belong inside the function and raises an <code>IndentationError</code>.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 4</div></div>
+              <pre><code>count = 10
+while count &gt; 0:
+    print(count)
+    count -= 1</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> <code>while</code> repeats while its condition is true. If you never change <code>count</code>, the condition stays true forever. Decrementing eventually ends the loop.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 5</div></div>
+              <pre><code>name = "Emma"
+print(f"Hello {name} 5")</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> You can’t concatenate a string and an integer with <code>+</code>. f-strings safely convert inserted values to text automatically.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 6</div></div>
+              <pre><code>def find_max(numbers):
+    max_num = numbers[0]
+    for num in numbers:
+        if num &gt; max_num:
+            max_num = num
+    return max_num
+
+print(find_max([3, 7, 2, 9, 5]))</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> The <code>if</code> must be inside the loop so every item is compared. The algorithm keeps the best value so far and updates it when a larger number is found.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 7</div></div>
+              <pre><code>my_dict = {"a": 1, "b": 2, "c": 3}
+print(my_dict.get("d", "Key not found"))</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> <code>my_dict["d"]</code> raises <code>KeyError</code> if the key is missing. <code>get</code> returns a default value instead of crashing.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 8</div></div>
+              <pre><code>def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+print(factorial(5))</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> This code is already correct. It uses recursion with a base case (<code>n == 0</code>) and a step that moves closer to the base case (<code>n - 1</code>).</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 9</div></div>
+              <pre><code>for i in range(1, 10):
+    if i % 2 == 0:
+        print(f"{i} is even")</code></pre>
+            </div>
+            <div class="explain"><strong>Explanation:</strong> <code>=</code> assigns values; <code>==</code> compares values. In an <code>if</code>, you need a comparison. <code>i % 2</code> checks the remainder; even numbers have remainder 0.</div>
+
+            <hr class="hr"/>
+
+            <div class="codeblock">
+              <div class="codehead"><div class="label">Answer 10</div></div>
+              <pre><code>def add_items_to_list(item, my_list=None):
+    if my_list is None:
+        my_list = []
+    my_list.append(item)
+    return my_list
+
+print(add_items_to_list(1))
+print(add_items_to_list(2))</code></pre>
+            </div>
+            <div class="explain">
+              <strong>Explanation:</strong> Default lists are created once and reused across calls, causing shared state.
+              Using <code>None</code> and creating a new list inside the function gives each call a fresh list (unless you pass one intentionally).
+            </div>
+          </section>
+        </div>
+      </article>
+    </main>
+
+    <footer>
+      <span>Print Worksheet first, then Answer Key (toggle and print again).</span>
+      <span id="footStamp">Generated locally</span>
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const body = document.body;
+      const switchEl = document.getElementById('viewSwitch');
+      const toggleBtn = document.getElementById('toggleAnswersBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const title = document.getElementById('docTitle');
+      const sub = document.getElementById('docSub');
+      const footStamp = document.getElementById('footStamp');
+
+      const setMode = (showAnswers) => {
+        body.setAttribute('data-show-answers', String(showAnswers));
+        switchEl.dataset.on = String(showAnswers);
+        switchEl.setAttribute('aria-checked', String(showAnswers));
+        toggleBtn.setAttribute('aria-pressed', String(showAnswers));
+        if(showAnswers){
+          title.textContent = "Answer Key";
+          sub.textContent = "Corrected code plus explanations. Print separately if needed.";
+        } else {
+          title.textContent = "Worksheet";
+          sub.textContent = "Fix each snippet so it runs and matches the intended behavior. Then explain what changed and why.";
+        }
+      };
+
+      const toggle = () => setMode(!(body.getAttribute('data-show-answers') === 'true'));
+      toggleBtn.addEventListener('click', toggle);
+      exportBtn.addEventListener('click', () => window.print());
+      switchEl.addEventListener('click', toggle);
+      switchEl.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          toggle();
+        }
+      });
+
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(!prefersReduced){
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            if(en.isIntersecting){
+              en.target.style.animationPlayState = 'running';
+              obs.unobserve(en.target);
+            }
+          });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('[data-reveal]').forEach(el => {
+          el.style.animationPlayState = 'paused';
+          obs.observe(el);
+        });
+      } else {
+        document.querySelectorAll('[data-reveal]').forEach(el => {
+          el.style.opacity = 1;
+          el.style.transform = 'none';
+          el.style.animation = 'none';
+        });
+      }
+
+      const now = new Date();
+      footStamp.textContent = `Generated locally • ${now.toLocaleDateString(undefined, {year:'numeric', month:'short', day:'2-digit'})}`;
+
+      setMode(false);
+    })();
+  </script>
+</body>
+</html>
