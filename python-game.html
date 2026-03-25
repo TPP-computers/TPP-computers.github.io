@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guess the Number — Worksheet</title>
+  <style>
+    :root{ --ink:#111; --muted:#444; --code:#0b1020; --paper:#fff; --rule:#ddd; }
+    @page { margin: 18mm; }
+    body{ font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif; color:var(--ink); background:var(--paper); }
+    h1{ font-size: 22px; margin: 0 0 10px; }
+    h2{ font-size: 16px; margin: 18px 0 8px; }
+    h3{ font-size: 13px; margin: 14px 0 6px; }
+    p, li{ font-size: 11.5px; line-height: 1.5; color:var(--muted); }
+    code, pre{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre{
+      background: #f6f7fb;
+      border: 1px solid var(--rule);
+      padding: 10px 12px;
+      border-radius: 10px;
+      overflow: auto;
+      font-size: 10.5px;
+      line-height: 1.45;
+      color: #0b1020;
+      white-space: pre;
+    }
+    .hr{ height:1px; background:var(--rule); margin: 14px 0; }
+    .small{ font-size: 10.5px; }
+  </style>
+</head>
+<body>
+  <h1>Worksheet: Understanding and Running the “Guess the Number” Python Game</h1>
+  <p class="small"><b>Where it runs:</b> Works on https://www.online-python.com/ (text-based, no extra libraries).</p>
+
+  <div class="hr"></div>
+
+  <h2>Overview</h2>
+  <p>
+    This worksheet explains how a simple “Guess the Number” game works in Python.
+    The player guesses a secret number and the program responds “too high” or “too low” until the player is correct.
+  </p>
+
+  <h2>Complete Code for the Game</h2>
+  <pre><code>"""
+Simple "Guess the Number" game in Python.
+Works in any Python environment including online interpreters.
+"""
+
+import random
+
+def guess_the_number():
+    print("Welcome to Guess the Number!")
+    print("I'm thinking of a number between 1 and 100.")
+    number = random.randint(1, 100)
+    attempts = 0
+
+    while True:
+        try:
+            guess = int(input("Enter your guess: "))
+            attempts += 1
+            if guess &lt; number:
+                print("Too low! Try again.")
+            elif guess &gt; number:
+                print("Too high! Try again.")
+            else:
+                print(f"Congratulations! You guessed it in {attempts} attempts.")
+                break
+        except ValueError:
+            print("Please enter a valid integer.")
+
+if __name__ == "__main__":
+    guess_the_number()</code></pre>
+
+  <h2>1. Program Structure</h2>
+  <p>
+    The game logic is inside <code>guess_the_number()</code>. The block
+    <code>if __name__ == "__main__":</code> makes sure the game starts when you run the file.
+  </p>
+
+  <h2>2. Key Components and Commands</h2>
+
+  <h3>a) Importing a module</h3>
+  <pre><code>import random</code></pre>
+  <p><code>random</code> is used to pick the secret number.</p>
+
+  <h3>b) Printing messages</h3>
+  <pre><code>print("Welcome to Guess the Number!")</code></pre>
+  <p><code>print()</code> outputs text to the screen.</p>
+
+  <h3>c) Creating the secret number</h3>
+  <pre><code>number = random.randint(1, 100)</code></pre>
+  <p><code>randint(a, b)</code> returns a random integer from <code>a</code> to <code>b</code> (inclusive).</p>
+
+  <h3>d) Looping until correct</h3>
+  <pre><code>while True:
+    ...</code></pre>
+  <p>The loop continues forever until we use <code>break</code>.</p>
+
+  <h3>e) Getting input safely</h3>
+  <pre><code>try:
+    guess = int(input("Enter your guess: "))
+except ValueError:
+    print("Please enter a valid integer.")</code></pre>
+  <p>
+    <code>input()</code> returns a string. <code>int(...)</code> converts it to a number.
+    If the conversion fails, <code>ValueError</code> is caught and the game continues.
+  </p>
+
+  <h3>f) Comparing guesses</h3>
+  <pre><code>if guess &lt; number:
+    ...
+elif guess &gt; number:
+    ...
+else:
+    ...</code></pre>
+  <p>Conditionals decide which message to show.</p>
+
+  <h2>3. How to Play</h2>
+  <ol>
+    <li>Run the program.</li>
+    <li>Type a guess and press Enter.</li>
+    <li>Use the “too high/too low” feedback to narrow it down.</li>
+    <li>When correct, the game shows how many attempts it took.</li>
+  </ol>
+
+  <h2>4. Important Python Concepts Used</h2>
+  <ul>
+    <li><b>Functions</b>: grouping logic into reusable blocks</li>
+    <li><b>Loops</b>: repeating actions until a condition is met</li>
+    <li><b>Conditionals</b>: branching logic (<code>if/elif/else</code>)</li>
+    <li><b>Exceptions</b>: handling invalid input with <code>try/except</code></li>
+    <li><b>Variables</b>: storing values like <code>number</code> and <code>attempts</code></li>
+  </ul>
+
+  <h2>5. Possible Extensions (with Code Tips)</h2>
+
+  <h3>5.1 Limit the number of guesses</h3>
+  <pre><code>MAX_ATTEMPTS = 10
+
+# After each guess:
+if attempts &gt;= MAX_ATTEMPTS:
+    print(f"Game over! The number was {number}.")
+    break</code></pre>
+
+  <h3>5.2 Difficulty levels (change the range)</h3>
+  <pre><code>difficulty = input("easy/medium/hard: ").lower()
+if difficulty == "easy":
+    low, high = 1, 50
+elif difficulty == "hard":
+    low, high = 1, 200
+else:
+    low, high = 1, 100
+number = random.randint(low, high)</code></pre>
+
+  <h3>5.3 Hints after several wrong guesses</h3>
+  <pre><code>hints_given = False
+
+# Inside the loop, after wrong guesses:
+if attempts &gt;= 5 and not hints_given:
+    print("Hint:", "even" if number % 2 == 0 else "odd")
+    hints_given = True</code></pre>
+
+  <h3>5.4 Best score across multiple games</h3>
+  <pre><code>best_score = None
+
+# When player wins:
+if best_score is None or attempts &lt; best_score:
+    best_score = attempts
+    print("New best score!")</code></pre>
+
+  <p class="small"><b>Next idea:</b> Put the whole game inside a “play again?” loop so you can keep playing without restarting the program.</p>
+</body>
+</html>
