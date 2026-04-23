@@ -1,0 +1,2013 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IT Triage Lab — 5 Realistic Incidents</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,650,750&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b1016;
+      --bg2:#070b10;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.085);
+      --stroke: rgba(255,255,255,.12);
+      --stroke2: rgba(255,255,255,.18);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --faint: rgba(255,255,255,.56);
+      --good: #45f0b6;
+      --warn: #ffcc66;
+      --bad: #ff6b7a;
+      --accent: #7cf4ff;
+      --accent2:#b7a7ff;
+
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 20px;
+      --radius2: 14px;
+
+      --max: 1140px;
+
+      --h1: clamp(2.2rem, 4.2vw, 3.65rem);
+      --h2: clamp(1.25rem, 2.2vw, 1.75rem);
+      --h3: clamp(1.05rem, 1.55vw, 1.25rem);
+      --p: clamp(1rem, 1.25vw, 1.05rem);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      color: var(--text);
+      font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 15% 12%, rgba(124,244,255,.14), transparent 55%),
+        radial-gradient(900px 600px at 82% 18%, rgba(183,167,255,.13), transparent 55%),
+        radial-gradient(900px 650px at 72% 84%, rgba(69,240,182,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    a { color: inherit; }
+    .wrap{ width:min(var(--max), calc(100% - 2rem)); margin-inline:auto; }
+
+    /* Subtle “circuit” texture (no images) */
+    .texture{
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      opacity: .35;
+      mix-blend-mode: screen;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px) 0 0 / 34px 34px,
+        linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px) 0 0 / 34px 34px,
+        radial-gradient(circle at 20px 20px, rgba(124,244,255,.12) 1px, transparent 2px) 0 0 / 68px 68px;
+      filter: blur(.2px);
+    }
+
+    header{
+      position: sticky;
+      top:0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(11,16,22,.82), rgba(11,16,22,.55));
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .95rem 0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:.8rem;
+      min-width: 220px;
+    }
+
+    .mark{
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background:
+        radial-gradient(14px 14px at 30% 30%, rgba(124,244,255,.95), transparent 60%),
+        radial-gradient(18px 18px at 68% 70%, rgba(183,167,255,.95), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      position: relative;
+      overflow:hidden;
+    }
+    .mark::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 200deg, transparent 0 30%, rgba(124,244,255,.10) 35%, transparent 50% 70%, rgba(183,167,255,.10) 75%, transparent 90%);
+      animation: spin 9s linear infinite;
+      opacity:.9;
+    }
+    @keyframes spin { to { transform: rotate(360deg);} }
+
+    .brand h1{
+      font-family: "Fraunces", serif;
+      font-size: 1.1rem;
+      letter-spacing: .2px;
+      margin:0;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height:1.1;
+    }
+
+    .navActions{
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.55rem;
+      padding:.55rem .75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: .92rem;
+      white-space: nowrap;
+    }
+    .dot{
+      width:10px; height:10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.9), rgba(255,255,255,.25));
+      box-shadow: 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .dot.good{ background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.9), rgba(69,240,182,.35)); box-shadow: 0 0 0 2px rgba(69,240,182,.22); }
+    .dot.warn{ background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.9), rgba(255,204,102,.35)); box-shadow: 0 0 0 2px rgba(255,204,102,.22); }
+
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      color: var(--text);
+      border-radius: 999px;
+      padding: .62rem .95rem;
+      font-weight: 600;
+      font-size: .95rem;
+      letter-spacing: .2px;
+      cursor:pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.24);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn.primary{
+      border-color: rgba(124,244,255,.28);
+      background:
+        linear-gradient(180deg, rgba(124,244,255,.18), rgba(124,244,255,.08));
+      box-shadow: 0 16px 40px rgba(124,244,255,.08), 0 16px 40px rgba(0,0,0,.35);
+    }
+    .btn.primary:hover{
+      border-color: rgba(124,244,255,.40);
+      box-shadow: 0 18px 46px rgba(124,244,255,.12), 0 18px 46px rgba(0,0,0,.35);
+    }
+    .btn.ghost{
+      background: transparent;
+      box-shadow:none;
+    }
+    .btn.ghost:hover{
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 12px 28px rgba(0,0,0,.22);
+    }
+
+    main{ padding: 1.1rem 0 4rem; }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: clamp(1rem, 3.2vw, 2.2rem);
+      align-items: start;
+      padding: clamp(1.1rem, 2.8vw, 1.8rem) 0 1.1rem;
+    }
+    @media (max-width: 960px){
+      .hero{ grid-template-columns: 1fr; }
+      .brand{ min-width: auto; }
+    }
+
+    .hero h2{
+      font-family: "Fraunces", serif;
+      font-size: var(--h1);
+      line-height: 1.02;
+      margin: .4rem 0 .75rem;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 1.1rem;
+      max-width: 65ch;
+    }
+
+    .heroMeta{
+      display:flex;
+      gap:.7rem;
+      flex-wrap: wrap;
+      margin: 0 0 1.25rem;
+    }
+
+    /* “Incident console” (right) */
+    .console{
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(900px 240px at 30% 0%, rgba(124,244,255,.12), transparent 60%),
+        radial-gradient(900px 280px at 88% 10%, rgba(183,167,255,.10), transparent 60%),
+        rgba(255,255,255,.05);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position: relative;
+    }
+    .consoleTop{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .lights{ display:flex; gap:.4rem; }
+    .light{
+      width:10px; height:10px; border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.06) inset;
+    }
+    .light:nth-child(1){ background: rgba(255,107,122,.55); }
+    .light:nth-child(2){ background: rgba(255,204,102,.55); }
+    .light:nth-child(3){ background: rgba(69,240,182,.55); }
+
+    .consoleBody{
+      padding: 1rem 1rem 1.05rem;
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .92rem;
+      color: rgba(255,255,255,.82);
+      line-height: 1.55;
+    }
+    .logLine{ display:flex; gap:.6rem; }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      padding: .12rem .5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.78);
+      font-size: .78rem;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+    }
+    .tag.good{ border-color: rgba(69,240,182,.25); color: rgba(69,240,182,.9); background: rgba(69,240,182,.08); }
+    .tag.warn{ border-color: rgba(255,204,102,.25); color: rgba(255,204,102,.95); background: rgba(255,204,102,.08); }
+    .tag.bad{ border-color: rgba(255,107,122,.25); color: rgba(255,107,122,.95); background: rgba(255,107,122,.08); }
+
+    .kpiRow{
+      margin-top: 1rem;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .65rem;
+    }
+    .kpi{
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding: .75rem .75rem .7rem;
+    }
+    .kpi .n{
+      font-family: "Fraunces", serif;
+      font-size: 1.25rem;
+      letter-spacing: .2px;
+      margin:0;
+    }
+    .kpi .l{
+      margin:.25rem 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    /* Lab area */
+    .lab{
+      margin-top: 1.2rem;
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap: clamp(.9rem, 2.5vw, 1.4rem);
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .lab{ grid-template-columns: 1fr; }
+    }
+
+    .rail{
+      position: sticky;
+      top: 86px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      box-shadow: 0 18px 60px rgba(0,0,0,.32);
+      overflow:hidden;
+    }
+    @media (max-width: 980px){
+      .rail{ position: relative; top:auto; }
+    }
+
+    .railHeader{
+      padding: 1rem 1rem .8rem;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+    }
+    .railHeader h3{
+      margin: 0 0 .3rem;
+      font-family: "Fraunces", serif;
+      font-size: 1.25rem;
+      letter-spacing: .2px;
+    }
+    .railHeader p{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: .95rem;
+    }
+
+    .progress{
+      padding: .9rem 1rem 1rem;
+    }
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.07);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(124,244,255,.85), rgba(183,167,255,.75), rgba(69,240,182,.75));
+      box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+      transition: width .35s ease;
+    }
+    .progMeta{
+      display:flex;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: .65rem;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .caseList{
+      padding: .25rem 0 .85rem;
+    }
+    .caseBtn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      border:0;
+      background: transparent;
+      color: var(--text);
+      cursor:pointer;
+      border-top: 1px solid rgba(255,255,255,.06);
+      transition: background .15s ease;
+      text-align:left;
+    }
+    .caseBtn:hover{ background: rgba(255,255,255,.04); }
+    .caseBtn[aria-current="true"]{
+      background:
+        linear-gradient(90deg, rgba(124,244,255,.10), transparent 70%);
+    }
+    .caseName{
+      display:flex;
+      flex-direction: column;
+      gap:.2rem;
+      min-width: 0;
+    }
+    .caseName strong{
+      font-size: .98rem;
+      letter-spacing: .1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .caseName span{
+      font-size: .9rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pill{
+      font-size: .8rem;
+      padding: .22rem .55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.78);
+      background: rgba(255,255,255,.04);
+      flex: 0 0 auto;
+    }
+    .pill.done{ border-color: rgba(69,240,182,.25); color: rgba(69,240,182,.92); background: rgba(69,240,182,.08); }
+    .pill.open{ border-color: rgba(255,204,102,.22); color: rgba(255,204,102,.95); background: rgba(255,204,102,.07); }
+
+    /* Case panel */
+    .panel{
+      border-radius: var(--radius);
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(1000px 380px at 10% 0%, rgba(124,244,255,.10), transparent 55%),
+        radial-gradient(900px 420px at 90% 0%, rgba(183,167,255,.10), transparent 55%),
+        rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .panelHeader{
+      padding: 1.15rem 1.15rem .95rem;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.14);
+    }
+    .panelHeaderTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .panelHeader h3{
+      margin:0;
+      font-family: "Fraunces", serif;
+      font-size: var(--h2);
+      line-height: 1.1;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin:.45rem 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: var(--p);
+      max-width: 80ch;
+    }
+
+    .badgeRow{ display:flex; gap:.5rem; flex-wrap: wrap; align-items:center; }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      padding: .35rem .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.78);
+      font-size: .86rem;
+      white-space: nowrap;
+    }
+    .badge b{ color: var(--text); font-weight: 600; }
+    .badge .mini{
+      width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.35);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.06);
+    }
+    .badge .mini.sev1{ background: rgba(255,107,122,.8); box-shadow: 0 0 0 2px rgba(255,107,122,.18); }
+    .badge .mini.sev2{ background: rgba(255,204,102,.85); box-shadow: 0 0 0 2px rgba(255,204,102,.18); }
+    .badge .mini.sev3{ background: rgba(69,240,182,.75); box-shadow: 0 0 0 2px rgba(69,240,182,.18); }
+
+    .panelBody{ padding: 1.1rem 1.15rem 1.2rem; }
+
+    .stepper{
+      display:flex;
+      gap:.55rem;
+      flex-wrap: wrap;
+      align-items:center;
+      margin-bottom: .9rem;
+    }
+    .stepDot{
+      width: 34px; height: 34px;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.78);
+      transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+    }
+    .stepDot.active{
+      background: rgba(124,244,255,.12);
+      border-color: rgba(124,244,255,.26);
+      color: rgba(255,255,255,.92);
+      transform: translateY(-1px);
+    }
+    .stepDot.done{
+      background: rgba(69,240,182,.10);
+      border-color: rgba(69,240,182,.22);
+      color: rgba(69,240,182,.95);
+    }
+    .stepLine{
+      height: 2px;
+      width: 26px;
+      background: rgba(255,255,255,.10);
+      border-radius: 999px;
+    }
+
+    .prompt{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: .7rem;
+      margin-top: .25rem;
+    }
+    .prompt h4{
+      margin:0;
+      font-size: var(--h3);
+      letter-spacing: .1px;
+    }
+    .prompt p{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: var(--p);
+      max-width: 85ch;
+    }
+
+    .options{
+      margin-top: .95rem;
+      display:grid;
+      gap: .7rem;
+    }
+    .opt{
+      text-align:left;
+      width:100%;
+      padding: .95rem .95rem;
+      border-radius: var(--radius2);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      color: var(--text);
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+      position: relative;
+      overflow:hidden;
+    }
+    .opt::before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(90deg, rgba(124,244,255,.10), transparent 55%, rgba(183,167,255,.08));
+      opacity:0;
+      transition: opacity .15s ease;
+      pointer-events:none;
+    }
+    .opt:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 16px 40px rgba(0,0,0,.22);
+    }
+    .opt:hover::before{ opacity:1; }
+    .opt:active{ transform: translateY(0px) scale(.995); }
+
+    .optTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: .9rem;
+    }
+    .opt strong{
+      display:block;
+      font-size: 1rem;
+      letter-spacing: .1px;
+      margin:0;
+    }
+    .opt small{
+      display:block;
+      color: var(--muted);
+      margin-top:.25rem;
+      line-height: 1.45;
+      font-size: .92rem;
+    }
+    .hint{
+      flex:0 0 auto;
+      font-size: .78rem;
+      padding: .22rem .5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.10);
+      color: rgba(255,255,255,.72);
+      user-select:none;
+    }
+
+    .feedback{
+      margin-top: .95rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+      padding: .9rem .95rem;
+      display:none;
+    }
+    .feedback.show{ display:block; }
+    .feedback .row{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .feedback p{ margin:.35rem 0 0; color: var(--muted); line-height: 1.6; }
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap:.5rem;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .status i{
+      width:10px;height:10px;border-radius:999px; background: rgba(255,255,255,.25);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .status.good{ color: rgba(69,240,182,.95); }
+    .status.good i{ background: rgba(69,240,182,.85); box-shadow: 0 0 0 2px rgba(69,240,182,.18); }
+    .status.bad{ color: rgba(255,107,122,.95); }
+    .status.bad i{ background: rgba(255,107,122,.85); box-shadow: 0 0 0 2px rgba(255,107,122,.18); }
+    .status.warn{ color: rgba(255,204,102,.95); }
+    .status.warn i{ background: rgba(255,204,102,.9); box-shadow: 0 0 0 2px rgba(255,204,102,.18); }
+
+    .fbActions{
+      display:flex;
+      gap:.55rem;
+      flex-wrap: wrap;
+      margin-top: .85rem;
+    }
+
+    footer{
+      margin-top: 2.2rem;
+      padding: 1.6rem 0 2.6rem;
+      color: var(--faint);
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    footer .cols{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 1rem;
+      align-items:start;
+    }
+    @media (max-width: 820px){
+      footer .cols{ grid-template-columns: 1fr; }
+    }
+    footer h4{
+      margin:0 0 .35rem;
+      font-family:"Fraunces", serif;
+      color: rgba(255,255,255,.86);
+      letter-spacing: .2px;
+    }
+    footer p{ margin:0; line-height:1.65; max-width: 75ch; }
+    footer .miniLinks{
+      display:flex; gap:.6rem; flex-wrap: wrap; justify-content:flex-end;
+    }
+    footer .miniLinks button{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.78);
+      padding: .5rem .75rem;
+      border-radius: 999px;
+      cursor:pointer;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    footer .miniLinks button:hover{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.20);
+      transform: translateY(-1px);
+    }
+
+    /* Reveal */
+    .reveal{
+      opacity: 0;
+      transform: translateY(10px);
+      animation: up .7s ease forwards;
+    }
+    @keyframes up{
+      to{ opacity: 1; transform: translateY(0); }
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition:none !important; scroll-behavior:auto !important; }
+      .reveal{ opacity:1; transform:none; }
+      .mark::after{ animation:none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="texture" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap nav">
+      <div class="brand" role="banner">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>IT Triage Lab</h1>
+          <p>Choose the next best step. Learn by branching.</p>
+        </div>
+      </div>
+
+      <div class="navActions">
+        <div class="chip" title="Mode">
+          <span class="dot warn" aria-hidden="true"></span>
+          <span><strong style="color:rgba(255,255,255,.86)">Sim</strong> · Guided troubleshooting</span>
+        </div>
+        <button class="btn ghost" id="btnJumpSolved" type="button" title="Jump to next unsolved case">Next unsolved</button>
+        <button class="btn primary" id="btnResetAll" type="button" title="Reset all progress">Reset lab</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="reveal" style="animation-delay:.05s">
+        <div class="heroMeta">
+          <span class="chip"><span class="dot good" aria-hidden="true"></span> 5 incidents</span>
+          <span class="chip"><span class="dot" aria-hidden="true"></span> Multi-step choices</span>
+          <span class="chip"><span class="dot warn" aria-hidden="true"></span> Real-world constraints</span>
+        </div>
+
+        <h2>Practice realistic I.T. problems—one decision at a time.</h2>
+        <p>
+          Each incident is a branching flow. Pick the best next action, move to the next step, and finish with a practical resolution.
+          Wrong turns won’t end the case—your feedback explains why.
+        </p>
+
+        <div style="display:flex; gap:.6rem; flex-wrap:wrap">
+          <button class="btn primary" id="btnStart" type="button">Start with Case 1</button>
+          <button class="btn" id="btnRandom" type="button">Shuffle case</button>
+          <button class="btn ghost" id="btnShowTips" type="button" aria-expanded="false" aria-controls="tips">Triage tips</button>
+        </div>
+
+        <div id="tips" class="feedback" style="display:none; margin-top:1rem;">
+          <div class="row">
+            <div class="status warn"><i aria-hidden="true"></i> Fast triage checklist</div>
+          </div>
+          <p class="mono" style="margin-top:.6rem">
+            1) Confirm scope (one user vs many) · 2) Identify last known good state · 3) Check simplest layers first (power/network/DNS/credentials) ·
+            4) Validate with logs/metrics · 5) Mitigate safely before “perfect fix”.
+          </p>
+        </div>
+      </div>
+
+      <aside class="console reveal" style="animation-delay:.12s" aria-label="Incident console">
+        <div class="consoleTop">
+          <div class="lights" aria-hidden="true">
+            <span class="light"></span><span class="light"></span><span class="light"></span>
+          </div>
+          <span class="tag warn" id="consoleTag">Queue: Active</span>
+        </div>
+        <div class="consoleBody">
+          <div class="mono" id="consoleLog" aria-live="polite">
+            <div class="logLine"><span class="tag">INFO</span><span>Welcome. Select a case to begin troubleshooting.</span></div>
+            <div class="logLine"><span class="tag warn">HINT</span><span>Best practice: pick the next action that reduces uncertainty.</span></div>
+          </div>
+          <div class="kpiRow" aria-label="Progress KPIs">
+            <div class="kpi">
+              <p class="n" id="kpiSolved">0</p>
+              <p class="l">Cases solved</p>
+            </div>
+            <div class="kpi">
+              <p class="n" id="kpiSteps">0</p>
+              <p class="l">Steps cleared</p>
+            </div>
+            <div class="kpi">
+              <p class="n" id="kpiAccuracy">—</p>
+              <p class="l">First-try accuracy</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="lab" aria-label="Lab workspace">
+      <nav class="rail reveal" style="animation-delay:.18s" aria-label="Case navigation">
+        <div class="railHeader">
+          <h3>Cases</h3>
+          <p>Pick an incident. Your progress saves locally in this browser.</p>
+        </div>
+
+        <div class="progress" aria-label="Overall progress">
+          <div class="bar" aria-hidden="true"><i id="progBar"></i></div>
+          <div class="progMeta">
+            <span id="progText">0 / 5 solved</span>
+            <span id="progDetail">0 steps</span>
+          </div>
+        </div>
+
+        <div class="caseList" id="caseList"></div>
+      </nav>
+
+      <article class="panel reveal" style="animation-delay:.24s" aria-label="Selected case">
+        <header class="panelHeader">
+          <div class="panelHeaderTop">
+            <div>
+              <h3 id="caseTitle">Select a case</h3>
+              <p class="sub" id="caseSummary">Choose a case from the left to begin.</p>
+            </div>
+            <div class="badgeRow" id="caseBadges" aria-label="Case metadata"></div>
+          </div>
+        </header>
+
+        <div class="panelBody">
+          <div class="stepper" id="stepper" aria-label="Step progress"></div>
+
+          <section class="prompt" aria-label="Current step">
+            <h4 id="stepTitle">—</h4>
+            <p id="stepBody">—</p>
+
+            <div class="options" id="options" aria-label="Multiple-choice options"></div>
+
+            <div class="feedback" id="feedback" aria-live="polite">
+              <div class="row">
+                <div class="status" id="fbStatus"><i aria-hidden="true"></i><span>—</span></div>
+                <div style="display:flex; gap:.5rem; flex-wrap:wrap">
+                  <span class="tag" id="fbTag">—</span>
+                </div>
+              </div>
+              <p id="fbText">—</p>
+              <div class="fbActions">
+                <button class="btn primary" id="btnContinue" type="button">Continue</button>
+                <button class="btn" id="btnRetry" type="button">Try again</button>
+                <button class="btn ghost" id="btnReveal" type="button">Reveal best choice</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <div class="wrap cols">
+        <div>
+          <h4>About this lab</h4>
+          <p>
+            Scenarios are designed to reflect common helpdesk / sysadmin triage: connectivity, DNS, identity, patching, and storage pressure.
+            The goal is to choose the next best step safely and quickly—not to memorize commands.
+          </p>
+        </div>
+        <div class="miniLinks">
+          <button type="button" id="btnExport">Export results</button>
+          <button type="button" id="btnImport">Import</button>
+          <button type="button" id="btnClearStorage">Clear saved data</button>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // --------------------------
+    // Data model (5 realistic IT problems, multi-step branching)
+    // --------------------------
+    const CASES = [
+      {
+        id: "dns-outage",
+        name: "Website down for some users",
+        subtitle: "DNS + caching + verification",
+        severity: 2,
+        domain: "Networking",
+        timebox: "20–30 min",
+        summary:
+          "Marketing reports the public website is “down” for some customers. Others can load it. You need to identify whether this is DNS, hosting, or ISP-related—and mitigate safely.",
+        steps: [
+          {
+            title: "Initial triage",
+            body:
+              "You can reproduce the issue from your phone on cellular (fails), but it loads on office Wi‑Fi. What’s the best next step to reduce uncertainty quickly?",
+            options: [
+              {
+                text: "Run DNS checks from multiple resolvers (dig/nslookup) and compare A/AAAA records + TTL",
+                detail: "Validate whether different networks are resolving different IPs.",
+                correct: true,
+                feedback:
+                  "Good. “Some users” strongly suggests DNS propagation/caching or split records. Compare authoritative vs public resolvers and check TTLs."
+              },
+              {
+                text: "Restart the web server immediately to clear any stuck processes",
+                detail: "Assumes hosting is the issue without evidence.",
+                correct: false,
+                feedback:
+                  "Risky and not evidence-based. If many users can still reach the site, the server may be fine. Confirm DNS and routing first."
+              },
+              {
+                text: "Blame the user’s browser cache and tell them to clear cookies",
+                detail: "Doesn’t address cross-network behavior.",
+                correct: false,
+                feedback:
+                  "Unlikely. Cross-network differences point to DNS or ISP pathing rather than browser state."
+              },
+              {
+                text: "Disable IPv6 on the load balancer as a quick fix",
+                detail: "Potentially disruptive; needs proof first.",
+                correct: false,
+                feedback:
+                  "Could make things worse. First confirm whether AAAA records exist and whether IPv6 endpoints are healthy."
+              }
+            ]
+          },
+          {
+            title: "What do the results show?",
+            body:
+              "You query public resolvers. Google DNS returns a new IP (203.0.113.50). Cloudflare still returns the old IP (203.0.113.10). Your authoritative DNS shows the new IP. What’s your best mitigation?",
+            options: [
+              {
+                text: "Confirm the old IP is still serving the site (or temporarily re-enable it) until caches expire",
+                detail: "Bridge the propagation gap; minimize user impact.",
+                correct: true,
+                feedback:
+                  "Correct. If the old endpoint can still respond (or be reattached), it reduces downtime while caches expire. This is a common safe mitigation."
+              },
+              {
+                text: "Force all ISPs to flush DNS caches by emailing them",
+                detail: "Not realistic or timely.",
+                correct: false,
+                feedback:
+                  "Not workable. You can’t reliably force external cache flushes at internet scale."
+              },
+              {
+                text: "Lower TTL now and wait; lowering TTL retroactively fixes it",
+                detail: "TTL changes don’t affect already-cached records.",
+                correct: false,
+                feedback:
+                  "TTL reductions only help future lookups. Existing caches still hold the old record until their current TTL expires."
+              },
+              {
+                text: "Change nameservers to a different DNS provider immediately",
+                detail: "High risk; introduces new propagation issues.",
+                correct: false,
+                feedback:
+                  "That’s an escalation move with its own propagation window. Mitigate first; then do controlled improvements later."
+              }
+            ]
+          },
+          {
+            title: "Close the incident",
+            body:
+              "You reattach the old IP to the load balancer pool and confirm both old/new IPs serve the same content. What’s the best final action set?",
+            options: [
+              {
+                text: "Document root cause, set a pre-change TTL strategy, and add DNS monitoring from multiple regions/resolvers",
+                detail: "Prevents recurrence; improves detection.",
+                correct: true,
+                feedback:
+                  "Exactly. Capture the change timeline, ensure future cutovers lower TTL in advance, and monitor resolution + HTTP from multiple vantage points."
+              },
+              {
+                text: "Leave both IPs permanently to avoid future propagation issues",
+                detail: "May hide misconfigurations and complicate security.",
+                correct: false,
+                feedback:
+                  "Sometimes you can run active/active, but “forever” isn’t a plan. Decide intentionally with architecture/security, not as an incident band-aid."
+              },
+              {
+                text: "Disable caching at all resolvers by setting TTL to 0",
+                detail: "Not universally honored and increases query load.",
+                correct: false,
+                feedback:
+                  "TTL=0 is not consistently respected and can add unnecessary load. Use reasonable TTLs and a change process."
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        id: "wifi-auth",
+        name: "Wi‑Fi connected, no internet",
+        subtitle: "DHCP/DNS/gateway isolation",
+        severity: 3,
+        domain: "Endpoint/Network",
+        timebox: "15–25 min",
+        summary:
+          "A user’s laptop shows it’s connected to corporate Wi‑Fi, but web pages won’t load. Other users nearby are fine. You need to isolate DHCP vs DNS vs routing quickly.",
+        steps: [
+          {
+            title: "First on-device check",
+            body:
+              "You remote into the device. What’s the best first check to determine whether this is local connectivity vs name resolution?",
+            options: [
+              {
+                text: "Check IP configuration and test: ping gateway, ping 1.1.1.1, then nslookup a known domain",
+                detail: "Separates L3 reachability from DNS.",
+                correct: true,
+                feedback:
+                  "Correct. Gateway ping checks local network; public IP ping checks upstream; nslookup tests DNS separately."
+              },
+              {
+                text: "Reinstall the Wi‑Fi driver immediately",
+                detail: "Heavy-handed without evidence.",
+                correct: false,
+                feedback:
+                  "Driver reinstalls are last resort. First confirm whether it’s DHCP/DNS/routing."
+              },
+              {
+                text: "Disable the firewall permanently",
+                detail: "Unsafe and likely unnecessary.",
+                correct: false,
+                feedback:
+                  "Not appropriate. You can test with temporary rules, but don’t disable security controls as a first step."
+              },
+              {
+                text: "Ask the user to forget the network and rejoin repeatedly",
+                detail: "May help sometimes but doesn’t diagnose.",
+                correct: false,
+                feedback:
+                  "Might clear a bad profile, but you still need evidence. Run targeted checks first."
+              }
+            ]
+          },
+          {
+            title: "Interpret the tests",
+            body:
+              "Results: IP = 169.254.x.x (APIPA). Gateway ping fails (no gateway). What’s the most likely cause and next best step?",
+            options: [
+              {
+                text: "DHCP failure; renew lease and check if the device is on the correct SSID/VLAN (captive portal / NAC)",
+                detail: "APIPA indicates no DHCP lease.",
+                correct: true,
+                feedback:
+                  "Yes. APIPA strongly indicates DHCP didn’t provide a lease. Validate SSID, NAC posture, and DHCP availability for that segment."
+              },
+              {
+                text: "DNS outage; manually set DNS to 8.8.8.8",
+                detail: "DNS isn’t the issue if no lease/gateway.",
+                correct: false,
+                feedback:
+                  "Without a valid IP and gateway, DNS changes won’t help. Fix DHCP/association first."
+              },
+              {
+                text: "ISP outage; wait 30 minutes",
+                detail: "Other users are fine; scope is local.",
+                correct: false,
+                feedback:
+                  "Other users working suggests it’s not ISP-wide. Focus on DHCP/NAC/local association."
+              },
+              {
+                text: "Web proxy misconfiguration; clear proxy settings",
+                detail: "Proxy issues still require valid network config.",
+                correct: false,
+                feedback:
+                  "Proxy problems can block browsing, but APIPA indicates you’re not properly on the network."
+              }
+            ]
+          },
+          {
+            title: "Resolution",
+            body:
+              "You discover the user connected to 'Corp‑Guest' SSID which requires a captive portal acceptance; NAC blocks DHCP until accepted. What’s the best fix and preventive action?",
+            options: [
+              {
+                text: "Guide them to accept the portal, then auto-join the correct SSID; add a clearer SSID naming + onboarding note",
+                detail: "Solves now and reduces repeats.",
+                correct: true,
+                feedback:
+                  "Correct. Resolve the immediate block and prevent confusion with naming, documentation, and optionally removing auto-join for guest."
+              },
+              {
+                text: "Disable NAC enforcement for convenience",
+                detail: "Creates security risk.",
+                correct: false,
+                feedback:
+                  "Not recommended. NAC exists for a reason—keep controls and improve user flow."
+              },
+              {
+                text: "Set a static IP on the device permanently",
+                detail: "Breaks network management.",
+                correct: false,
+                feedback:
+                  "Static IPs are fragile and don’t address the underlying captive portal posture requirement."
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        id: "mfa-lockout",
+        name: "User can’t sign in (MFA prompts looping)",
+        subtitle: "Identity, conditional access, time drift",
+        severity: 2,
+        domain: "Identity & Access",
+        timebox: "20–35 min",
+        summary:
+          "A user reports they enter correct password, then MFA prompts repeatedly and never completes sign-in. They can’t access email or Teams.",
+        steps: [
+          {
+            title: "Scope & signal",
+            body:
+              "What’s the best first action to avoid guessing between password issues, MFA, and policy blocks?",
+            options: [
+              {
+                text: "Check the identity provider sign-in logs for the user (failure reason, CA policy, device state, location)",
+                detail: "Logs tell you which control failed.",
+                correct: true,
+                feedback:
+                  "Correct. Sign-in logs typically show whether MFA succeeded and what blocked access (policy, token, device compliance, risk)."
+              },
+              {
+                text: "Reset the user password immediately",
+                detail: "May not address MFA/policy and can disrupt.",
+                correct: false,
+                feedback:
+                  "Password resets can be unnecessary and disruptive. Confirm the failure reason first."
+              },
+              {
+                text: "Disable MFA for the user to get them back in",
+                detail: "High-risk; should be last resort.",
+                correct: false,
+                feedback:
+                  "Avoid weakening security unless you have an approved break-glass process and a clear temporary plan."
+              },
+              {
+                text: "Reinstall Microsoft Authenticator",
+                detail: "Could help but only after evidence.",
+                correct: false,
+                feedback:
+                  "Authenticator issues happen, but logs will confirm whether MFA succeeded and what happens afterward."
+              }
+            ]
+          },
+          {
+            title: "What do logs indicate?",
+            body:
+              "Logs show: password OK, MFA approved, then token issuance fails with 'device not compliant' from conditional access. The device recently had its clock changed. What’s the best next step?",
+            options: [
+              {
+                text: "Have the user correct system time/timezone and re-run device compliance check (MDM sync), then reattempt sign-in",
+                detail: "Time drift can break device compliance and token validity.",
+                correct: true,
+                feedback:
+                  "Correct. Time drift can break cert/token checks and MDM compliance. Fix time, sync MDM, then retry."
+              },
+              {
+                text: "Remove the compliance policy entirely",
+                detail: "Overreaction affecting all users.",
+                correct: false,
+                feedback:
+                  "Too broad. Fix the device state for this user instead of weakening org-wide controls."
+              },
+              {
+                text: "Whitelist the user from conditional access permanently",
+                detail: "Creates a security hole.",
+                correct: false,
+                feedback:
+                  "Permanent exceptions are dangerous. Use break-glass only with approvals and time bounds."
+              },
+              {
+                text: "Tell the user to keep approving MFA until it works",
+                detail: "Doesn’t resolve compliance failure.",
+                correct: false,
+                feedback:
+                  "The issue isn’t approval; it’s post-MFA policy enforcement."
+              }
+            ]
+          },
+          {
+            title: "Close the loop",
+            body:
+              "After correcting time and syncing, sign-in succeeds. What’s the best follow-up?",
+            options: [
+              {
+                text: "Document the CA failure reason, add a helpdesk runbook for 'MFA loop' symptoms, and monitor for time drift",
+                detail: "Turns a weird symptom into a repeatable fix.",
+                correct: true,
+                feedback:
+                  "Yes. The symptom (“MFA loop”) can hide device compliance issues. A runbook and monitoring reduce time-to-fix."
+              },
+              {
+                text: "Disable compliance checks for mobile workers",
+                detail: "Not necessary.",
+                correct: false,
+                feedback:
+                  "Compliance is often essential. Handle edge cases with better guidance and tooling."
+              },
+              {
+                text: "Require password resets for anyone with MFA loops",
+                detail: "Misdiagnosis.",
+                correct: false,
+                feedback:
+                  "This case wasn’t a password problem. Blanket resets waste time and create risk."
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        id: "printer-spooler",
+        name: "Network printer stuck (jobs won’t print)",
+        subtitle: "Spooler queue + driver + permissions",
+        severity: 3,
+        domain: "End-user Services",
+        timebox: "15–30 min",
+        summary:
+          "A department printer shows jobs queued but nothing prints. Some users can print to other printers. You need to clear the stuck queue and prevent recurrence.",
+        steps: [
+          {
+            title: "Quick isolation",
+            body:
+              "Before changing anything, what’s the best way to determine if the issue is printer-side or server/client-side?",
+            options: [
+              {
+                text: "Print a test page from the printer’s own control panel and check its network status page",
+                detail: "Validates printer hardware and basic connectivity.",
+                correct: true,
+                feedback:
+                  "Correct. If the printer can print internally, the device is likely OK and the issue is queue/driver/network path."
+              },
+              {
+                text: "Reboot the print server immediately",
+                detail: "Disruptive if multiple queues depend on it.",
+                correct: false,
+                feedback:
+                  "A reboot can clear symptoms but impacts others. Verify scope and try targeted fixes first."
+              },
+              {
+                text: "Uninstall and reinstall printing for all users",
+                detail: "Overkill.",
+                correct: false,
+                feedback:
+                  "Too broad. Confirm whether the printer itself is healthy first."
+              },
+              {
+                text: "Replace toner and paper",
+                detail: "May be relevant, but doesn’t explain stuck queue for everyone.",
+                correct: false,
+                feedback:
+                  "Supplies can matter, but 'jobs queued but not printing' often indicates spooler or queue lock."
+              }
+            ]
+          },
+          {
+            title: "Queue diagnosis",
+            body:
+              "The printer prints its internal test page fine. The shared queue on the print server shows one job 'Deleting…' stuck for 20 minutes. Best next action?",
+            options: [
+              {
+                text: "Stop Print Spooler, clear the stuck spool files for that printer, then start Spooler and retry",
+                detail: "Standard remediation for a locked spool queue.",
+                correct: true,
+                feedback:
+                  "Correct. Clearing the stuck job safely usually requires stopping spooler and removing the spool files, then restarting."
+              },
+              {
+                text: "Change the printer IP address to force reconnection",
+                detail: "Creates new problems; not addressing stuck deletion.",
+                correct: false,
+                feedback:
+                  "An IP change can break mappings and doesn’t fix a stuck queue state."
+              },
+              {
+                text: "Disable the printer share permanently and tell users to use USB printing",
+                detail: "Not viable for a department printer.",
+                correct: false,
+                feedback:
+                  "Avoid workarounds that undermine manageability unless you’re in a true emergency."
+              },
+              {
+                text: "Update firmware during the incident without a plan",
+                detail: "Risky change at the wrong time.",
+                correct: false,
+                feedback:
+                  "Firmware updates are important but should be scheduled and validated, not done mid-incident unless necessary."
+              }
+            ]
+          },
+          {
+            title: "Prevent recurrence",
+            body:
+              "Printing is restored. What’s a practical preventive step that actually reduces repeats?",
+            options: [
+              {
+                text: "Update/standardize the driver package and enable a policy to render print jobs on the client if appropriate",
+                detail: "Driver issues and server rendering can cause stuck queues.",
+                correct: true,
+                feedback:
+                  "Good. Standardized drivers and adjusting rendering can reduce spooler lockups. Also consider monitoring for queue length."
+              },
+              {
+                text: "Tell users to print fewer pages",
+                detail: "Not an engineering fix.",
+                correct: false,
+                feedback:
+                  "User behavior is rarely the root cause of a stuck 'Deleting…' queue."
+              },
+              {
+                text: "Remove printing permissions for most users",
+                detail: "Breaks the business process.",
+                correct: false,
+                feedback:
+                  "Not aligned with the goal. Fix reliability, don’t restrict access unnecessarily."
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        id: "disk-full",
+        name: "Server disk at 100% (app errors)",
+        subtitle: "Log growth + safe cleanup",
+        severity: 1,
+        domain: "Systems",
+        timebox: "25–45 min",
+        summary:
+          "A production app reports intermittent 500 errors. Metrics show the server’s disk is at 100%. You need a safe mitigation first, then a durable fix.",
+        steps: [
+          {
+            title: "Immediate safety-first action",
+            body:
+              "Disk is full and the app is erroring. What’s the best next step to stabilize without causing data loss?",
+            options: [
+              {
+                text: "Identify top disk consumers and free space safely (rotate/compress logs, clear temp files) while preserving evidence",
+                detail: "Controlled cleanup with observability.",
+                correct: true,
+                feedback:
+                  "Correct. First: find what’s growing and do safe, reversible cleanup (log rotation/compression) to restore headroom."
+              },
+              {
+                text: "Delete the entire /var/log directory",
+                detail: "Destroys audit trails and can break services.",
+                correct: false,
+                feedback:
+                  "Too destructive. You can truncate or rotate specific logs, but don’t wipe logs wholesale."
+              },
+              {
+                text: "Reboot the server to clear space",
+                detail: "Reboots don’t free disk and can worsen recovery.",
+                correct: false,
+                feedback:
+                  "A reboot typically won’t free disk. It may also fail if the system can’t write during boot."
+              },
+              {
+                text: "Ignore it and focus on increasing CPU/memory",
+                detail: "Not the bottleneck.",
+                correct: false,
+                feedback:
+                  "The evidence points to disk saturation. Address the actual constraint."
+              }
+            ]
+          },
+          {
+            title: "Root cause pattern",
+            body:
+              "You find a single app log growing rapidly due to repeated 'DB connection failed' entries. What’s the best next action to stop the bleeding?",
+            options: [
+              {
+                text: "Fix the underlying DB connectivity issue (pool/credentials/network), and add rate-limited logging / backoff",
+                detail: "Stops log storm + solves incident driver.",
+                correct: true,
+                feedback:
+                  "Correct. The log growth is a symptom of a failure loop. Solve DB connectivity and prevent log storms with backoff and log throttling."
+              },
+              {
+                text: "Keep truncating the log every hour manually",
+                detail: "Doesn’t address root cause.",
+                correct: false,
+                feedback:
+                  "That’s a workaround. You need to stop the failure loop and implement proper rotation."
+              },
+              {
+                text: "Disable logging completely",
+                detail: "Loses diagnostics and compliance trails.",
+                correct: false,
+                feedback:
+                  "Instead, tune logging levels, add throttling, and ensure rotation—don’t blind yourself."
+              },
+              {
+                text: "Move the database to a new provider today",
+                detail: "Major change during an incident.",
+                correct: false,
+                feedback:
+                  "Migration is not an incident response step. Stabilize first, then plan improvements."
+              }
+            ]
+          },
+          {
+            title: "Durable resolution",
+            body:
+              "Service is stable and disk has headroom. What’s the best long-term fix set?",
+            options: [
+              {
+                text: "Implement log rotation + alerts, cap retention, add disk usage monitoring, and create a runbook for safe cleanup",
+                detail: "Prevents recurrence and speeds response.",
+                correct: true,
+                feedback:
+                  "Exactly. Rotation + retention + alerts + runbook turns this into a managed risk."
+              },
+              {
+                text: "Buy a bigger disk and call it done",
+                detail: "May delay but not prevent recurrence.",
+                correct: false,
+                feedback:
+                  "More disk helps, but without rotation and alerts you’ll hit the same failure mode later."
+              },
+              {
+                text: "Turn off monitoring to reduce noise",
+                detail: "Opposite of what you need.",
+                correct: false,
+                feedback:
+                  "Monitoring is what prevents 3am surprises. Tune it—don’t remove it."
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // --------------------------
+    // State + persistence
+    // --------------------------
+    const STORAGE_KEY = "it-triage-lab:v1";
+    const state = {
+      activeCaseId: null,
+      caseStepIndex: {},          // { [caseId]: number }
+      solved: {},                 // { [caseId]: boolean }
+      attempts: {},               // { [caseId_stepIndex]: number }
+      firstTryCorrect: {},        // { [caseId_stepIndex]: boolean }
+      clearedSteps: 0
+    };
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const parsed = JSON.parse(raw);
+        Object.assign(state, parsed);
+      }catch(e){}
+    }
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    function clearState(){
+      localStorage.removeItem(STORAGE_KEY);
+      // reset in-memory
+      state.activeCaseId = null;
+      state.caseStepIndex = {};
+      state.solved = {};
+      state.attempts = {};
+      state.firstTryCorrect = {};
+      state.clearedSteps = 0;
+    }
+
+    // --------------------------
+    // Helpers
+    // --------------------------
+    const $ = (sel, root=document) => root.querySelector(sel);
+
+    function sevLabel(sev){
+      if(sev === 1) return {t:"Sev 1", cls:"bad"};
+      if(sev === 2) return {t:"Sev 2", cls:"warn"};
+      return {t:"Sev 3", cls:"good"};
+    }
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    function activeCase(){
+      return CASES.find(c => c.id === state.activeCaseId) || null;
+    }
+
+    function getStepIndex(caseId){
+      return state.caseStepIndex[caseId] ?? 0;
+    }
+
+    function setStepIndex(caseId, idx){
+      state.caseStepIndex[caseId] = idx;
+      saveState();
+    }
+
+    function isSolved(caseId){
+      return !!state.solved[caseId];
+    }
+
+    function markSolved(caseId){
+      state.solved[caseId] = true;
+      saveState();
+    }
+
+    function attemptKey(caseId, stepIdx){ return `${caseId}__${stepIdx}`; }
+
+    function incAttempt(caseId, stepIdx){
+      const k = attemptKey(caseId, stepIdx);
+      state.attempts[k] = (state.attempts[k] || 0) + 1;
+      saveState();
+      return state.attempts[k];
+    }
+
+    function setFirstTryCorrect(caseId, stepIdx, val){
+      const k = attemptKey(caseId, stepIdx);
+      if(state.firstTryCorrect[k] == null){
+        state.firstTryCorrect[k] = !!val;
+        saveState();
+      }
+    }
+
+    function computeStats(){
+      const solvedCount = Object.values(state.solved).filter(Boolean).length;
+      const totalCases = CASES.length;
+
+      // clearedSteps counts only correct steps cleared
+      // but if state.clearedSteps not present (older), compute fallback
+      let clearedSteps = state.clearedSteps || 0;
+
+      // first-try accuracy = correct on first attempt across all steps attempted
+      const vals = Object.values(state.firstTryCorrect);
+      const denom = vals.length;
+      const numer = vals.filter(Boolean).length;
+      const acc = denom ? Math.round((numer/denom)*100) : null;
+
+      return {solvedCount, totalCases, clearedSteps, acc};
+    }
+
+    function logConsole(tag, text){
+      const log = $("#consoleLog");
+      const line = document.createElement("div");
+      line.className = "logLine";
+      const t = document.createElement("span");
+      t.className = "tag" + (tag === "OK" ? " good" : tag === "WARN" ? " warn" : tag === "ERR" ? " bad" : "");
+      t.textContent = tag;
+      const msg = document.createElement("span");
+      msg.textContent = text;
+      line.appendChild(t);
+      line.appendChild(msg);
+      log.appendChild(line);
+      // keep last ~10 lines visible
+      while(log.children.length > 10) log.removeChild(log.firstChild);
+    }
+
+    // --------------------------
+    // Render
+    // --------------------------
+    function renderCaseList(){
+      const list = $("#caseList");
+      list.innerHTML = "";
+
+      CASES.forEach((c, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "caseBtn";
+        btn.type = "button";
+        btn.dataset.caseId = c.id;
+        btn.setAttribute("aria-current", String(state.activeCaseId === c.id));
+
+        const left = document.createElement("div");
+        left.className = "caseName";
+
+        const strong = document.createElement("strong");
+        strong.textContent = `${idx+1}. ${c.name}`;
+
+        const span = document.createElement("span");
+        span.textContent = c.subtitle;
+
+        left.appendChild(strong);
+        left.appendChild(span);
+
+        const pill = document.createElement("span");
+        pill.className = "pill " + (isSolved(c.id) ? "done" : "open");
+        pill.textContent = isSolved(c.id) ? "Solved" : "Open";
+
+        btn.appendChild(left);
+        btn.appendChild(pill);
+
+        btn.addEventListener("click", () => {
+          setActiveCase(c.id);
+        });
+
+        list.appendChild(btn);
+      });
+    }
+
+    function renderProgress(){
+      const {solvedCount, totalCases, clearedSteps, acc} = computeStats();
+      $("#progText").textContent = `${solvedCount} / ${totalCases} solved`;
+      $("#progDetail").textContent = `${clearedSteps} steps`;
+      $("#progBar").style.width = `${Math.round((solvedCount/totalCases)*100)}%`;
+
+      $("#kpiSolved").textContent = solvedCount;
+      $("#kpiSteps").textContent = clearedSteps;
+      $("#kpiAccuracy").textContent = acc == null ? "—" : `${acc}%`;
+
+      const tag = $("#consoleTag");
+      if(solvedCount === totalCases){
+        tag.textContent = "Queue: Completed";
+        tag.className = "tag good";
+      } else {
+        tag.textContent = "Queue: Active";
+        tag.className = "tag warn";
+      }
+    }
+
+    function renderCase(){
+      const c = activeCase();
+      const badges = $("#caseBadges");
+      badges.innerHTML = "";
+      $("#feedback").classList.remove("show");
+
+      if(!c){
+        $("#caseTitle").textContent = "Select a case";
+        $("#caseSummary").textContent = "Choose a case from the left to begin.";
+        $("#stepper").innerHTML = "";
+        $("#stepTitle").textContent = "—";
+        $("#stepBody").textContent = "—";
+        $("#options").innerHTML = "";
+        return;
+      }
+
+      $("#caseTitle").textContent = c.name;
+      $("#caseSummary").textContent = c.summary;
+
+      const sev = sevLabel(c.severity);
+
+      const b1 = document.createElement("span");
+      b1.className = "badge";
+      b1.innerHTML = `<span class="mini ${c.severity===1?'sev1':c.severity===2?'sev2':'sev3'}" aria-hidden="true"></span><b>${sev.t}</b>`;
+
+      const b2 = document.createElement("span");
+      b2.className = "badge";
+      b2.innerHTML = `<span class="mini" aria-hidden="true"></span><b>${c.domain}</b>`;
+
+      const b3 = document.createElement("span");
+      b3.className = "badge";
+      b3.innerHTML = `<span class="mini" aria-hidden="true"></span><b>${c.timebox}</b>`;
+
+      const idx = getStepIndex(c.id);
+      const done = isSolved(c.id);
+      const b4 = document.createElement("span");
+      b4.className = "badge";
+      b4.innerHTML = `<span class="mini" aria-hidden="true"></span><b>${done ? "Solved" : `Step ${idx+1} / ${c.steps.length}`}</b>`;
+
+      badges.append(b1,b2,b3,b4);
+
+      renderStepper(c.id);
+      renderStep();
+      renderCaseList();
+      renderProgress();
+    }
+
+    function renderStepper(caseId){
+      const c = CASES.find(x => x.id === caseId);
+      const stepper = $("#stepper");
+      stepper.innerHTML = "";
+      const idx = getStepIndex(caseId);
+      const done = isSolved(caseId);
+
+      c.steps.forEach((_, i) => {
+        const dot = document.createElement("div");
+        dot.className = "stepDot";
+        dot.textContent = String(i+1);
+
+        if(done || i < idx) dot.classList.add("done");
+        if(!done && i === idx) dot.classList.add("active");
+
+        stepper.appendChild(dot);
+        if(i !== c.steps.length - 1){
+          const line = document.createElement("div");
+          line.className = "stepLine";
+          stepper.appendChild(line);
+        }
+      });
+    }
+
+    function renderStep(){
+      const c = activeCase();
+      if(!c) return;
+
+      const idx = getStepIndex(c.id);
+      const done = isSolved(c.id);
+
+      const optionsWrap = $("#options");
+      optionsWrap.innerHTML = "";
+
+      if(done){
+        $("#stepTitle").textContent = "Case complete";
+        $("#stepBody").textContent = "Nice work. You can revisit steps anytime or move to the next case.";
+        const btnRow = document.createElement("div");
+        btnRow.style.display = "flex";
+        btnRow.style.gap = ".6rem";
+        btnRow.style.flexWrap = "wrap";
+        btnRow.style.marginTop = ".9rem";
+        btnRow.innerHTML = `
+          <button class="btn primary" type="button" id="btnNextUnsolvedInline">Next unsolved case</button>
+          <button class="btn" type="button" id="btnRestartCaseInline">Restart this case</button>
+        `;
+        optionsWrap.appendChild(btnRow);
+
+        $("#btnNextUnsolvedInline").addEventListener("click", jumpToNextUnsolved);
+        $("#btnRestartCaseInline").addEventListener("click", () => restartCase(c.id));
+        return;
+      }
+
+      const step = c.steps[idx];
+      $("#stepTitle").textContent = step.title;
+      $("#stepBody").textContent = step.body;
+
+      step.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.type = "button";
+        btn.dataset.optIndex = i;
+
+        btn.innerHTML = `
+          <div class="optTop">
+            <div>
+              <strong>${opt.text}</strong>
+              <small>${opt.detail}</small>
+            </div>
+            <span class="hint">Option ${String.fromCharCode(65+i)}</span>
+          </div>
+        `;
+
+        btn.addEventListener("click", () => onChooseOption(i));
+        optionsWrap.appendChild(btn);
+      });
+    }
+
+    // --------------------------
+    // Interaction
+    // --------------------------
+    let pendingAdvance = null; // function to run on continue
+
+    function showFeedback({type, tag, text, canContinue, revealIndex=null}){
+      const fb = $("#feedback");
+      const status = $("#fbStatus");
+      const fbTag = $("#fbTag");
+      const fbText = $("#fbText");
+
+      status.className = "status " + (type === "good" ? "good" : type === "bad" ? "bad" : "warn");
+      status.querySelector("span").textContent =
+        type === "good" ? "Correct step" : type === "bad" ? "Not the best next step" : "Close, but…";
+      fbTag.className = "tag " + (type === "good" ? "good" : type === "bad" ? "bad" : "warn");
+      fbTag.textContent = tag;
+      fbText.textContent = text;
+
+      $("#btnContinue").style.display = canContinue ? "inline-flex" : "none";
+      $("#btnRetry").style.display = canContinue ? "none" : "inline-flex";
+      $("#btnReveal").style.display = canContinue ? "none" : "inline-flex";
+
+      fb.classList.add("show");
+
+      $("#btnReveal").onclick = () => {
+        const c = activeCase();
+        if(!c) return;
+        const idx = getStepIndex(c.id);
+        const step = c.steps[idx];
+        const best = step.options.findIndex(o => o.correct);
+        highlightBest(best);
+        logConsole("HINT", `Best choice revealed: Option ${String.fromCharCode(65+best)}.`);
+      };
+    }
+
+    function highlightBest(bestIndex){
+      const opts = Array.from(document.querySelectorAll(".opt"));
+      opts.forEach((b, i) => {
+        b.style.outline = "none";
+        b.style.borderColor = "rgba(255,255,255,.14)";
+      });
+      const el = opts[bestIndex];
+      if(el){
+        el.style.borderColor = "rgba(69,240,182,.38)";
+        el.style.outline = "2px solid rgba(69,240,182,.22)";
+        el.scrollIntoView({block:"nearest", behavior: prefersReducedMotion() ? "auto" : "smooth"});
+      }
+    }
+
+    function prefersReducedMotion(){
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    function onChooseOption(optIndex){
+      const c = activeCase();
+      if(!c) return;
+
+      const stepIdx = getStepIndex(c.id);
+      const step = c.steps[stepIdx];
+      const opt = step.options[optIndex];
+
+      const attemptNum = incAttempt(c.id, stepIdx);
+
+      if(opt.correct){
+        // first-try accuracy
+        setFirstTryCorrect(c.id, stepIdx, attemptNum === 1);
+
+        // mark step cleared
+        state.clearedSteps = (state.clearedSteps || 0) + 1;
+        saveState();
+
+        logConsole("OK", `${c.name}: Step ${stepIdx+1} cleared (${step.title}).`);
+
+        pendingAdvance = () => {
+          const next = stepIdx + 1;
+          if(next >= c.steps.length){
+            markSolved(c.id);
+            logConsole("OK", `${c.name}: case solved.`);
+          } else {
+            setStepIndex(c.id, next);
+          }
+          pendingAdvance = null;
+          $("#feedback").classList.remove("show");
+          renderCase();
+        };
+
+        showFeedback({
+          type: "good",
+          tag: "Next best step",
+          text: opt.feedback,
+          canContinue: true
+        });
+
+      } else {
+        // first-try accuracy: mark false if first attempt and wrong
+        if(attemptNum === 1) setFirstTryCorrect(c.id, stepIdx, false);
+
+        logConsole("WARN", `${c.name}: Step ${stepIdx+1} wrong choice (Option ${String.fromCharCode(65+optIndex)}).`);
+
+        pendingAdvance = null;
+        showFeedback({
+          type: "bad",
+          tag: "Try a different angle",
+          text: opt.feedback,
+          canContinue: false
+        });
+      }
+
+      renderProgress();
+    }
+
+    $("#btnContinue").addEventListener("click", () => {
+      if(typeof pendingAdvance === "function") pendingAdvance();
+    });
+
+    $("#btnRetry").addEventListener("click", () => {
+      $("#feedback").classList.remove("show");
+      // keep the user on same step
+      logConsole("INFO", "Retrying step — choose a different option.");
+    });
+
+    function setActiveCase(caseId){
+      state.activeCaseId = caseId;
+      saveState();
+      renderCase();
+      const c = CASES.find(x => x.id === caseId);
+      logConsole("INFO", `Opened case: ${c.name}.`);
+    }
+
+    function restartCase(caseId){
+      state.caseStepIndex[caseId] = 0;
+      state.solved[caseId] = false;
+      saveState();
+      renderCaseList();
+      renderCase();
+      logConsole("INFO", `Restarted case: ${CASES.find(c=>c.id===caseId).name}.`);
+    }
+
+    function jumpToNextUnsolved(){
+      const idx = CASES.findIndex(c => c.id === state.activeCaseId);
+      for(let offset=1; offset<=CASES.length; offset++){
+        const c = CASES[(idx + offset + CASES.length) % CASES.length];
+        if(!isSolved(c.id)){
+          setActiveCase(c.id);
+          return;
+        }
+      }
+      // all solved
+      logConsole("OK", "All cases solved. Reset the lab to practice again.");
+    }
+
+    // Buttons
+    $("#btnStart").addEventListener("click", () => setActiveCase(CASES[0].id));
+    $("#btnRandom").addEventListener("click", () => {
+      const pick = CASES[Math.floor(Math.random()*CASES.length)];
+      setActiveCase(pick.id);
+    });
+
+    $("#btnJumpSolved").addEventListener("click", jumpToNextUnsolved);
+
+    $("#btnResetAll").addEventListener("click", () => {
+      const ok = confirm("Reset all lab progress? This will clear saved progress in this browser.");
+      if(!ok) return;
+      clearState();
+      loadState();
+      renderCaseList();
+      renderProgress();
+      renderCase();
+      logConsole("INFO", "Lab reset complete.");
+    });
+
+    $("#btnShowTips").addEventListener("click", () => {
+      const tips = $("#tips");
+      const btn = $("#btnShowTips");
+      const open = tips.style.display !== "none";
+      tips.style.display = open ? "none" : "block";
+      btn.setAttribute("aria-expanded", String(!open));
+      if(!open) logConsole("INFO", "Opened triage tips.");
+    });
+
+    $("#btnClearStorage").addEventListener("click", () => {
+      const ok = confirm("Clear saved data only (keeps the page)?");
+      if(!ok) return;
+      clearState();
+      loadState();
+      renderCaseList();
+      renderProgress();
+      renderCase();
+      logConsole("INFO", "Saved data cleared.");
+    });
+
+    $("#btnExport").addEventListener("click", async () => {
+      const payload = localStorage.getItem(STORAGE_KEY) || JSON.stringify(state);
+      const blob = new Blob([payload], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "it-triage-lab-progress.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      logConsole("OK", "Exported results JSON.");
+    });
+
+    $("#btnImport").addEventListener("click", () => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "application/json";
+      inp.onchange = async () => {
+        const file = inp.files && inp.files[0];
+        if(!file) return;
+        try{
+          const text = await file.text();
+          const parsed = JSON.parse(text);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          loadState();
+          renderCaseList();
+          renderProgress();
+          renderCase();
+          logConsole("OK", "Imported results JSON.");
+        }catch(e){
+          alert("Import failed. Ensure the JSON file is valid.");
+        }
+      };
+      inp.click();
+    });
+
+    // --------------------------
+    // Scroll-trigger reveals (IntersectionObserver)
+    // --------------------------
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = "translateY(0)";
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+    // --------------------------
+    // Init
+    // --------------------------
+    loadState();
+
+    // default active case if previously opened
+    if(!state.activeCaseId){
+      state.activeCaseId = CASES[0].id;
+      saveState();
+    }
+
+    renderCaseList();
+    renderProgress();
+    renderCase();
+  </script>
+</body>
+</html>
