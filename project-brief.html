@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IT Project Brief Worksheet — Export to Word</title>
+  <meta name="description" content="Worksheet + grading rubric for writing an IT project brief. Export to Word (.doc) in one click." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,650,750&family=Inter:wght@400,500,600,700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Warm academic / print-forward */
+      --paper:#fbf7f0;
+      --ink:#1f2328;
+      --muted:#5a646f;
+      --rule:rgba(31,35,40,.14);
+
+      --brand:#1d4ed8;        /* refined blue */
+      --brand2:#c2410c;       /* warm terracotta */
+      --accent:#0f766e;       /* teal */
+      --hi:#fef3c7;           /* soft highlight */
+
+      --shadow: 0 18px 60px rgba(17,24,39,.12);
+      --shadow2: 0 10px 35px rgba(17,24,39,.10);
+
+      --r-lg: 22px;
+      --r-md: 16px;
+
+      --max: 1100px;
+
+      --step--1: clamp(.88rem, .83rem + .2vw, .98rem);
+      --step-0: clamp(1rem, .95rem + .35vw, 1.12rem);
+      --step-1: clamp(1.2rem, 1.05rem + .75vw, 1.55rem);
+      --step-2: clamp(1.55rem, 1.25rem + 1.4vw, 2.2rem);
+      --step-3: clamp(2.1rem, 1.6rem + 2.3vw, 3.2rem);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(194,65,12,.10), transparent 60%),
+        radial-gradient(900px 650px at 90% 20%, rgba(29,78,216,.12), transparent 55%),
+        radial-gradient(900px 650px at 65% 90%, rgba(15,118,110,.10), transparent 55%),
+        linear-gradient(180deg, #ffffff 0%, #fbfaf7 35%, #f6f3ee 100%);
+      line-height:1.5;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    button{ font:inherit; }
+
+    /* Top bar */
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,.65);
+      border-bottom: 1px solid rgba(31,35,40,.10);
+    }
+    .topbar__inner{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 220px;
+    }
+    .mark{
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background:
+        radial-gradient(16px 16px at 30% 35%, rgba(255,255,255,.8), rgba(255,255,255,0) 60%),
+        linear-gradient(135deg, rgba(29,78,216,.95), rgba(15,118,110,.92));
+      box-shadow: 0 12px 28px rgba(29,78,216,.22);
+      position:relative;
+      overflow:hidden;
+    }
+    .mark::after{
+      content:"";
+      position:absolute;
+      inset:-30%;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.22) 0 6px, rgba(255,255,255,0) 6px 14px);
+      transform: rotate(10deg);
+      opacity:.55;
+    }
+    .brand h1{
+      margin:0;
+      font-family: Fraunces, serif;
+      font-size: 1.02rem;
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:.86rem;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:1px solid rgba(31,35,40,.14);
+      background: rgba(255,255,255,.85);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 14px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 10px 25px rgba(17,24,39,.06);
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(31,35,40,.22);
+      box-shadow: 0 16px 38px rgba(17,24,39,.10);
+      background: rgba(255,255,255,.95);
+    }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn--primary{
+      border-color: rgba(29,78,216,.22);
+      background: linear-gradient(180deg, rgba(29,78,216,.12), rgba(29,78,216,.06));
+    }
+    .btn--primary .pill{
+      background: linear-gradient(135deg, rgba(29,78,216,1), rgba(15,118,110,1));
+      color:white;
+      border: 0;
+    }
+    .btn--ghost{
+      background: rgba(255,255,255,.65);
+    }
+
+    .pill{
+      font-size:.78rem;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border:1px solid rgba(31,35,40,.12);
+      color: var(--muted);
+      background: rgba(255,255,255,.9);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+
+    /* Layout */
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 22px 18px 70px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items:start;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+    }
+
+    /* Intro */
+    .hero{
+      grid-column: 1 / -1;
+      border-radius: var(--r-lg);
+      padding: 22px 22px 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.55)),
+        radial-gradient(600px 260px at 18% 18%, rgba(194,65,12,.15), transparent 60%),
+        radial-gradient(580px 260px at 90% 22%, rgba(29,78,216,.16), transparent 60%),
+        radial-gradient(620px 260px at 70% 100%, rgba(15,118,110,.12), transparent 60%);
+      border: 1px solid rgba(31,35,40,.12);
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-120%);
+      animation: sheen 1.2s ease-out .35s 1 forwards;
+      pointer-events:none;
+      opacity:.55;
+    }
+    @keyframes sheen{
+      to{ transform: translateX(120%); opacity:0; }
+    }
+
+    .hero__grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 880px){
+      .hero__grid{ grid-template-columns: 1fr; }
+    }
+
+    .hero h2{
+      font-family: Fraunces, serif;
+      margin: 2px 0 8px;
+      font-size: var(--step-3);
+      line-height:1.02;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: var(--step-0);
+      max-width: 64ch;
+    }
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      margin-top: 10px;
+    }
+
+    .callout{
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      border: 1px solid rgba(31,35,40,.10);
+      background: rgba(255,255,255,.62);
+      box-shadow: var(--shadow2);
+    }
+    .callout h3{
+      margin: 0 0 6px;
+      font-size: 1rem;
+      letter-spacing:.2px;
+    }
+    .callout ul{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .callout li{ margin: 6px 0; }
+
+    /* Panels */
+    .panel{
+      border-radius: var(--r-lg);
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(31,35,40,.12);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .panel__head{
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(31,35,40,.10);
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap: 14px;
+    }
+    .panel__head h3{
+      margin:0;
+      font-family: Fraunces, serif;
+      font-size: var(--step-1);
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .panel__head p{
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: var(--step--1);
+      max-width: 70ch;
+    }
+    .panel__body{
+      padding: 16px 18px 18px;
+    }
+
+    /* Form styling */
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 680px){
+      .grid2{ grid-template-columns: 1fr; }
+    }
+
+    label{
+      display:block;
+      font-size:.88rem;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+    input[type="text"], input[type="date"], textarea{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(31,35,40,.14);
+      background: rgba(255,255,255,.82);
+      padding: 11px 12px;
+      outline:none;
+      transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+      color: var(--ink);
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+    input:focus, textarea:focus{
+      border-color: rgba(29,78,216,.35);
+      box-shadow: 0 0 0 4px rgba(29,78,216,.12);
+    }
+
+    .hint{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .divider{
+      height: 1px;
+      background: rgba(31,35,40,.10);
+      margin: 16px 0;
+    }
+
+    /* Rubric table */
+    table{
+      width:100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(31,35,40,.12);
+      border-radius: 16px;
+      overflow:hidden;
+    }
+    th, td{
+      border-bottom: 1px solid rgba(31,35,40,.08);
+      padding: 10px 10px;
+      vertical-align: top;
+      font-size: .9rem;
+    }
+    th{
+      text-align:left;
+      background: linear-gradient(180deg, rgba(29,78,216,.10), rgba(29,78,216,.04));
+      font-weight: 650;
+    }
+    tr:last-child td{ border-bottom:0; }
+    .scorecell{
+      width: 96px;
+      white-space:nowrap;
+    }
+    .scorePick{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:center;
+    }
+    .chip{
+      border:1px solid rgba(31,35,40,.16);
+      background: rgba(255,255,255,.9);
+      border-radius: 999px;
+      padding: 6px 8px;
+      font-size: .82rem;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .chip:hover{ transform: translateY(-1px); border-color: rgba(31,35,40,.26); }
+    .chip[aria-pressed="true"]{
+      background: linear-gradient(135deg, rgba(194,65,12,.18), rgba(29,78,216,.14));
+      border-color: rgba(29,78,216,.35);
+    }
+
+    .total{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(31,35,40,.20);
+      background: rgba(254,243,199,.35);
+    }
+    .total strong{
+      font-family: Fraunces, serif;
+      letter-spacing:.2px;
+      font-size: 1.05rem;
+    }
+    .total .muted{ color: var(--muted); font-size:.9rem; }
+
+    /* Reveal motion */
+    .reveal{
+      opacity:0;
+      transform: translateY(10px);
+      animation: rise .7s cubic-bezier(.2,.8,.2,1) forwards;
+    }
+    @keyframes rise{
+      to{ opacity:1; transform: translateY(0); }
+    }
+    .d1{ animation-delay:.05s; }
+    .d2{ animation-delay:.12s; }
+    .d3{ animation-delay:.19s; }
+    .d4{ animation-delay:.26s; }
+
+    /* Print */
+    @media print{
+      body{ background: white; }
+      .topbar{ display:none; }
+      .wrap{ max-width: none; padding: 0; }
+      .hero{ box-shadow:none; border:0; background:white; }
+      .panel{ box-shadow:none; }
+      .panel, table{ break-inside: avoid; }
+      input, textarea{ border:1px solid #999 !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <div class="brand" aria-label="Worksheet builder">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>IT Project Brief — Student Worksheet</h1>
+          <p>Write a clear brief + grade with rubric • export to Word</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn--ghost" id="btnPrint" type="button" title="Print as paper worksheet">
+          <span class="pill">Ctrl/⌘ P</span>
+          Print
+        </button>
+        <button class="btn btn--primary" id="btnWord" type="button" title="Download as a Word document (.doc)">
+          <span class="pill">.DOC</span>
+          Download Word
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="page">
+    <section class="hero reveal d1" aria-label="Overview">
+      <div class="hero__grid">
+        <div>
+          <h2>Write a brief for an Information Technology project.</h2>
+          <p>
+            This worksheet tests your ability to define a project clearly before building it.
+            A strong brief explains the <strong>goal</strong>, <strong>users</strong>, <strong>requirements</strong>,
+            <strong>constraints</strong>, and <strong>success criteria</strong>—in plain, unambiguous language.
+          </p>
+
+          <div class="meta" aria-label="Quick facts">
+            <span class="pill">Age group: 15</span>
+            <span class="pill">Time: 35–50 minutes</span>
+            <span class="pill">Skill: Requirements writing</span>
+            <span class="pill">Deliverable: 1-page brief</span>
+          </div>
+        </div>
+
+        <aside class="callout" aria-label="Teacher notes">
+          <h3>Teacher/Assessor Checklist</h3>
+          <ul>
+            <li>Students use specific, testable wording (avoid “easy” / “nice”).</li>
+            <li>Features are measurable (what it does, not how it looks).</li>
+            <li>Constraints are realistic (time, tools, privacy, access).</li>
+            <li>Deadline and success criteria are explicit.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Worksheet -->
+    <section class="panel reveal d2" id="worksheet" aria-label="Worksheet">
+      <div class="panel__head">
+        <div>
+          <h3>Worksheet: Project Brief</h3>
+          <p>Complete each section using the scenario. Write in clear sentences and bullet points.</p>
+        </div>
+        <span class="pill" title="You can print or export to Word">Student copy</span>
+      </div>
+
+      <div class="panel__body">
+        <div class="grid2" aria-label="Student details">
+          <div>
+            <label for="studentName">Student name</label>
+            <input id="studentName" type="text" placeholder="e.g., Alex Nguyen" />
+          </div>
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+          </div>
+        </div>
+
+        <div class="divider" role="separator"></div>
+
+        <article aria-label="Scenario">
+          <h4 style="margin:0 0 6px; font-family:Fraunces,serif; letter-spacing:.2px;">Scenario</h4>
+          <p style="margin:0; color:var(--muted);">
+            Your school wants a <strong>mobile app</strong> to help students manage homework and study schedules.
+            The app should reduce missed deadlines and help students plan their week.
+          </p>
+          <p class="hint">
+            Assume the app will be designed first (prototype) and may be built later. Your brief should still be written like a real client document.
+          </p>
+        </article>
+
+        <div class="divider" role="separator"></div>
+
+        <section aria-label="Brief questions">
+          <div style="display:grid; gap:12px;">
+            <div>
+              <label for="title">1) Project title</label>
+              <input id="title" type="text" placeholder="Give the app a clear name" />
+              <p class="hint">Tip: include what it is and who it helps (e.g., “StudySync — Planner for Students”).</p>
+            </div>
+
+            <div>
+              <label for="purpose">2) Purpose (problem + goal) Explain: What problem exists now? What will change if the project succeeds?</label>
+              <textarea id="purpose" placeholder="Explain: What problem exists now? What will change if the project succeeds?"></textarea>
+              <p class="hint">Use: “Currently…, which causes…. This project will… so that…”.</p>
+            </div>
+
+            <div>
+              <label for="audience">3) Target audience (users) Describe who will use it, when, and on what devices. Include at least 2 user types if relevant.</label>
+              <textarea id="audience" placeholder="Describe who will use it, when, and on what devices. Include at least 2 user types if relevant."></textarea>
+              <p class="hint">Example user types: Year 10 students, teachers posting tasks, parents viewing deadlines (if allowed).</p>
+            </div>
+
+            <div>
+              <label for="features">4) Key features / requirements (at least 4) Write bullet points. Each feature should be testable (you could check if it works).</label>
+              <textarea id="features" placeholder="Write bullet points. Each feature should be testable (you could check if it works).&#10;• ...&#10;• ..."></textarea>
+              <p class="hint">Avoid vague features like “modern design”. Prefer “push reminders 24h before due date”.</p>
+            </div>
+
+            <div>
+              <label for="constraints">5) Constraints (limits) Include limits such as time, budget, devices, privacy, school rules, offline access, or tools.</label>
+              <textarea id="constraints" placeholder="Include limits such as time, budget, devices, privacy, school rules, offline access, or tools."></textarea>
+              <p class="hint">Good constraints sound real: “No student data stored without consent” / “Must work on low-end phones”.</p>
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label for="deadline">6) Deadline</label>
+                <input id="deadline" type="text" placeholder="e.g., Prototype due: 20 May (Week 4)" />
+              </div>
+              <div>
+                <label for="success">7) Success criteria (how we know it worked) e.g., 80% of testers can add a task in under 30s</label>
+                <input id="success" type="text" placeholder="e.g., 80% of testers can add a task in under 30s" />
+              </div>
+            </div>
+
+            <div>
+              <label for="reflection">Part 4: Reflection (answer all 3) 1) Why write a project brief before building? 2) How does it help the team and stakeholders 3) What can go wrong if it’s unclear?</label>
+              <textarea id="reflection" placeholder="1) Why write a project brief before building?&#10;2) How does it help the team and stakeholders?&#10;3) What can go wrong if it’s unclear?"></textarea>
+            </div>
+
+            <div>
+              <label for="bonus">Client pitch (3–4 sentences) Write a short paragraph that could be read to a client. Keep it confident and specific.</label>
+              <textarea id="bonus" placeholder="Write a short paragraph that could be read to a client. Keep it confident and specific."></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Rubric -->
+    <section class="panel reveal d3" id="rubric" aria-label="Grading rubric">
+      <div class="panel__head">
+        <div>
+          <h3>Grading Rubric</h3>
+          <p>Score each criterion 1–4. Total updates automatically.</p>
+        </div>
+        <span class="pill">Teacher copy</span>
+      </div>
+
+      <div class="panel__body">
+        <div class="hint" style="margin-top:0;">
+          Scale: <strong>4</strong> Excellent • <strong>3</strong> Good • <strong>2</strong> Satisfactory • <strong>1</strong> Needs improvement
+        </div>
+
+        <div style="margin-top:12px; overflow:auto;">
+          <table aria-label="Rubric table">
+            <thead>
+              <tr>
+                <th style="min-width:190px;">Criteria</th>
+                <th>Excellent (4)</th>
+                <th>Good (3)</th>
+                <th>Satisfactory (2)</th>
+                <th>Needs Improvement (1)</th>
+                <th class="scorecell">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-row>
+                <td><strong>Project Title</strong></td>
+                <td>Clear, relevant, memorable; reflects purpose/users.</td>
+                <td>Clear and relevant.</td>
+                <td>Some relevance but vague or generic.</td>
+                <td>Unclear or missing.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Project Title score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Purpose</strong></td>
+                <td>Problem + goal explained clearly; specific outcomes.</td>
+                <td>Purpose clear; mostly specific.</td>
+                <td>Some clarity but limited detail.</td>
+                <td>Unclear, incorrect, or missing.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Purpose score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Target Audience</strong></td>
+                <td>Well-defined users + context (when/how used).</td>
+                <td>Defined users; some context.</td>
+                <td>Vague audience description.</td>
+                <td>Unclear or missing.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Target Audience score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Key Features / Requirements</strong></td>
+                <td>4+ testable, relevant requirements aligned to goal.</td>
+                <td>3+ relevant requirements; mostly testable.</td>
+                <td>1–2 requirements or mixed relevance.</td>
+                <td>Missing or mostly irrelevant.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Key Features score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Constraints</strong></td>
+                <td>Realistic constraints identified + explained impact.</td>
+                <td>Some constraints identified.</td>
+                <td>Mentioned but unclear or unrealistic.</td>
+                <td>Missing or incorrect.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Constraints score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Deadline</strong></td>
+                <td>Clear, realistic milestone/date stated.</td>
+                <td>Stated; somewhat realistic.</td>
+                <td>Unclear timeline.</td>
+                <td>Missing.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Deadline score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Clarity &amp; Organization</strong></td>
+                <td>Well-structured; concise; minimal errors.</td>
+                <td>Mostly organized; minor errors.</td>
+                <td>Some confusing parts; several errors.</td>
+                <td>Hard to follow; many errors.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Clarity score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row>
+                <td><strong>Reflection Questions</strong></td>
+                <td>Thoughtful, complete answers showing understanding.</td>
+                <td>Mostly complete and relevant.</td>
+                <td>Superficial or incomplete.</td>
+                <td>Missing or irrelevant.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Reflection score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr data-row data-bonus="true">
+                <td><strong>Client Pitch</strong></td>
+                <td>Persuasive, specific, client-friendly summary.</td>
+                <td>Clear summary; mildly persuasive.</td>
+                <td>Unclear or too vague.</td>
+                <td>Missing/off-topic.</td>
+                <td class="scorecell">
+                  <div class="scorePick" role="group" aria-label="Bonus score">
+                    <button class="chip" data-score="4" type="button" aria-pressed="false">4</button>
+                    <button class="chip" data-score="3" type="button" aria-pressed="false">3</button>
+                    <button class="chip" data-score="2" type="button" aria-pressed="false">2</button>
+                    <button class="chip" data-score="1" type="button" aria-pressed="false">1</button>
+                    <button class="chip" data-score="0" type="button" aria-pressed="true" title="Not counted">—</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="total" aria-label="Total score">
+          <div>
+            <strong>Total: <span id="totalScore">0</span></strong>
+            <span class="muted"> / <span id="totalMax">32</span></span>
+          </div>
+          <div class="muted" id="gradeHint">Choose scores to calculate total.</div>
+        </div>
+
+        <div class="divider" role="separator"></div>
+
+        <div class="grid2" aria-label="Assessor fields">
+          <div>
+            <label for="assessor">Assessor/Teacher</label>
+            <input id="assessor" type="text" placeholder="Name" />
+          </div>
+          <div>
+            <label for="comments">Feedback (optional)</label>
+            <input id="comments" type="text" placeholder="One strength + one next step" />
+          </div>
+        </div>
+
+        <p class="hint">
+          Recommendation: grade out of <strong>32</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- Export tips -->
+    <aside class="panel reveal d4" aria-label="Export help">
+      <div class="panel__head">
+        <div>
+          <h3>Export as a Word document</h3>
+          <p>This page can generate a .doc file that opens in Microsoft Word/Google Docs.</p>
+        </div>
+        <span class="pill">One click</span>
+      </div>
+      <div class="panel__body">
+        <ol style="margin:0; padding-left:18px; color:var(--muted);">
+          <li style="margin:8px 0;">Fill in the worksheet fields (optional).</li>
+          <li style="margin:8px 0;">Click <strong>Download Word</strong>.</li>
+          <li style="margin:8px 0;">Open the file in Word. You can edit/print from there.</li>
+        </ol>
+        <div class="divider" role="separator"></div>
+        <p class="hint" style="margin:0;">
+          Note: Word export is HTML-based (.doc). It preserves headings, tables, and most formatting.
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    // IntersectionObserver reveal for panels (subtle; avoids heavy animation)
+    (function(){
+      const els = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if(e.isIntersecting){
+            e.target.style.animationPlayState = 'running';
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.08 });
+      els.forEach(el => {
+        el.style.animationPlayState = 'paused';
+        io.observe(el);
+      });
+    })();
+
+    // Print
+    document.getElementById('btnPrint').addEventListener('click', () => window.print());
+
+    // Rubric scoring
+    const totalScoreEl = document.getElementById('totalScore');
+    const totalMaxEl = document.getElementById('totalMax');
+    const gradeHintEl = document.getElementById('gradeHint');
+
+    function computeTotals(){
+      const rows = Array.from(document.querySelectorAll('tr[data-row]'));
+      let total = 0;
+      let max = 0;
+
+      rows.forEach(row => {
+        const isBonus = row.getAttribute('data-bonus') === 'true';
+        const pressed = row.querySelector('.chip[aria-pressed="true"]');
+        const score = pressed ? Number(pressed.dataset.score) : 0;
+
+        // Non-bonus always counts toward /28 (8 rows * 4)
+        if(!isBonus){
+          total += score;
+          max += 4;
+        } else {
+          // Bonus: counts if selected 1-4; if — (0) it's not counted in max
+          if(score > 0){
+            total += score;
+            max += 4;
+          }
+        }
+      });
+
+      totalScoreEl.textContent = total;
+      totalMaxEl.textContent = max;
+
+      if(max === 0){
+        gradeHintEl.textContent = "Choose scores to calculate total.";
+        return;
+      }
+
+      const pct = Math.round((total / max) * 100);
+      gradeHintEl.textContent = `Approx. ${pct}%`;
+    }
+
+    document.querySelectorAll('tr[data-row]').forEach(row => {
+      const chips = row.querySelectorAll('.chip');
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          chips.forEach(c => c.setAttribute('aria-pressed', 'false'));
+          chip.setAttribute('aria-pressed', 'true');
+          computeTotals();
+        });
+      });
+    });
+    computeTotals();
+
+    // Export to Word (.doc) - HTML-based document with inline CSS.
+    function escapeHtml(str){
+      return String(str ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    function fieldValue(id){
+      const el = document.getElementById(id);
+      if(!el) return '';
+      return el.value || '';
+    }
+
+    function buildWordHTML(){
+      const studentName = escapeHtml(fieldValue('studentName'));
+      const date = escapeHtml(fieldValue('date'));
+      const assessor = escapeHtml(fieldValue('assessor'));
+      const comments = escapeHtml(fieldValue('comments'));
+
+      const title = escapeHtml(fieldValue('title'));
+      const purpose = escapeHtml(fieldValue('purpose')).replaceAll('\n','<br/>');
+      const audience = escapeHtml(fieldValue('audience')).replaceAll('\n','<br/>');
+      const features = escapeHtml(fieldValue('features')).replaceAll('\n','<br/>');
+      const constraints = escapeHtml(fieldValue('constraints')).replaceAll('\n','<br/>');
+      const deadline = escapeHtml(fieldValue('deadline'));
+      const success = escapeHtml(fieldValue('success'));
+      const reflection = escapeHtml(fieldValue('reflection')).replaceAll('\n','<br/>');
+      const bonus = escapeHtml(fieldValue('bonus')).replaceAll('\n','<br/>');
+
+      // Capture rubric scores
+      const rubricRows = Array.from(document.querySelectorAll('#rubric tbody tr[data-row]')).map(row => {
+        const crit = row.querySelector('td strong')?.textContent?.trim() || '';
+        const pressed = row.querySelector('.chip[aria-pressed="true"]');
+        const score = pressed ? pressed.dataset.score : '';
+        return { crit, score };
+      });
+
+      const total = escapeHtml(totalScoreEl.textContent);
+      const max = escapeHtml(totalMaxEl.textContent);
+
+      const docStyles = `
+        @page { margin: 1in; }
+        body { font-family: Calibri, Arial, sans-serif; color: #1f2328; }
+        h1 { font-family: Georgia, "Times New Roman", serif; font-size: 22pt; margin: 0 0 8pt; }
+        h2 { font-size: 14pt; margin: 16pt 0 6pt; }
+        h3 { font-size: 12pt; margin: 12pt 0 6pt; }
+        p, li { font-size: 11pt; line-height: 1.35; }
+        .meta { margin: 0 0 10pt; }
+        .box { border: 1px solid #cfd6dd; padding: 10pt; border-radius: 8pt; background: #fbf7f0; }
+        .grid { width:100%; border-collapse: collapse; margin-top: 6pt; }
+        .grid td, .grid th { border: 1px solid #cfd6dd; padding: 7pt; vertical-align: top; }
+        .grid th { background: #eef3ff; }
+        .small { color: #5a646f; font-size: 10pt; }
+        .hl { background: #fef3c7; padding: 1pt 3pt; border-radius: 4pt; }
+      `;
+
+      const rubricList = rubricRows.map(r => `
+        <tr>
+          <td><strong>${escapeHtml(r.crit)}</strong></td>
+          <td style="text-align:center;">${escapeHtml(r.score)}</td>
+        </tr>
+      `).join('');
+
+      // Word-friendly HTML wrapper
+      return `
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>IT Project Brief Worksheet</title>
+<style>${docStyles}</style>
+</head>
+<body>
+  <h1>Information Technology Project Brief Worksheet</h1>
+  <p class="small">Trades Academy • Deliverable: Project brief + reflection • Includes grading rubric</p>
+
+  <table style="width:100%; border-collapse:collapse; margin: 8pt 0 0;">
+    <tr>
+      <td style="width:50%; padding:0;">
+        <p class="meta"><strong>Student name:</strong> <span class="hl">${studentName || '&nbsp;'}</span></p>
+      </td>
+      <td style="width:50%; padding:0;">
+        <p class="meta"><strong>Date:</strong> <span class="hl">${date || '&nbsp;'}</span></p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="box">
+    <h2 style="margin-top:0;">Scenario</h2>
+    <p>Your school wants a <strong>mobile app</strong> to help students manage homework and study schedules. The app should reduce missed deadlines and help students plan their week.</p>
+  </div>
+
+  <h2>Part 3: Project Brief</h2>
+  <h3>1) Project title</h3>
+  <p>${title || '&nbsp;'}</p>
+
+  <h3>2) Purpose (problem + goal)</h3>
+  <p>${purpose || '&nbsp;'}</p>
+
+  <h3>3) Target audience (users)</h3>
+  <p>${audience || '&nbsp;'}</p>
+
+  <h3>4) Key features / requirements (at least 4)</h3>
+  <p>${features || '&nbsp;'}</p>
+
+  <h3>5) Constraints (limits)</h3>
+  <p>${constraints || '&nbsp;'}</p>
+
+  <table style="width:100%; border-collapse:collapse; margin-top: 6pt;">
+    <tr>
+      <td style="width:50%; padding:0;">
+        <h3 style="margin-bottom:4pt;">6) Deadline</h3>
+        <p>${deadline || '&nbsp;'}</p>
+      </td>
+      <td style="width:50%; padding:0;">
+        <h3 style="margin-bottom:4pt;">7) Success criteria</h3>
+        <p>${success || '&nbsp;'}</p>
+      </td>
+    </tr>
+  </table>
+
+  <h2>Part 4: Reflection</h2>
+  <p>${reflection || '&nbsp;'}</p>
+
+  <h2>Bonus (optional): Client pitch</h2>
+  <p>${bonus || '&nbsp;'}</p>
+
+  <h2>Grading Rubric (Scores)</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th>Criteria</th>
+        <th style="width:90pt; text-align:center;">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rubricList}
+    </tbody>
+  </table>
+
+  <p><strong>Total:</strong> ${total} / ${max}</p>
+
+  <h2>Assessor notes</h2>
+  <p><strong>Assessor/Teacher:</strong> ${assessor || '&nbsp;'}</p>
+  <p><strong>Feedback:</strong> ${comments || '&nbsp;'}</p>
+
+  <p class="small">Tip: If you want the bonus excluded, set the bonus score to “—” before exporting.</p>
+</body>
+</html>
+      `.trim();
+    }
+
+    function downloadWord(){
+      const html = buildWordHTML();
+
+      // Word can open HTML in .doc container. Use BOM for better encoding.
+      const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+
+      const student = (document.getElementById('studentName').value || 'Student').trim().replace(/[^\w\- ]+/g,'');
+      const filename = `IT_Project_Brief_Worksheet_${student || 'Student'}.doc`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    }
+
+    document.getElementById('btnWord').addEventListener('click', downloadWord);
+  </script>
+</body>
+</html>
