@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beginner HTML Worksheet</title>
+  <meta name="description" content="A stylish beginner HTML worksheet for 16-year-olds learning the basics of web structure, tags, and page building." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #f7f3ea;
+      --paper: rgba(255,255,255,0.72);
+      --ink: #1f1a17;
+      --muted: #5f564f;
+      --accent: #d86a2e;
+      --accent-2: #2d6a63;
+      --line: rgba(31,26,23,0.12);
+      --shadow: 0 20px 60px rgba(38, 29, 20, 0.12);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Space Grotesk", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(216,106,46,0.14), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(45,106,99,0.14), transparent 30%),
+        linear-gradient(180deg, #fbf8f2 0%, var(--bg) 100%);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(31,26,23,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,26,23,0.03) 1px, transparent 1px);
+      background-size:26px 26px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.45), transparent 85%);
+      z-index:-1;
+    }
+
+    h1,h2,h3{
+      font-family:"Fraunces", serif;
+      line-height:0.95;
+      letter-spacing:-0.03em;
+      margin:0 0 0.5rem;
+    }
+
+    h1{
+      font-size:clamp(3rem, 8vw, 7rem);
+      font-weight:800;
+    }
+
+    h2{
+      font-size:clamp(2rem, 4vw, 3.4rem);
+      font-weight:800;
+    }
+
+    h3{
+      font-size:clamp(1.2rem, 2vw, 1.6rem);
+      font-weight:700;
+    }
+
+    p, li{
+      font-size:clamp(1rem, 1.3vw, 1.08rem);
+      color:var(--muted);
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .page{
+      width:min(calc(100% - 2rem), var(--max));
+      margin-inline:auto;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:1rem 0;
+      position:sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(14px);
+      background:linear-gradient(180deg, rgba(247,243,234,0.86), rgba(247,243,234,0.56));
+      border-bottom:1px solid rgba(31,26,23,0.08);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:0.8rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      font-size:0.9rem;
+    }
+
+    .brand-mark{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:
+        linear-gradient(135deg, var(--accent), #f2b66d);
+      color:white;
+      box-shadow:0 10px 24px rgba(216,106,46,0.25);
+      transform:rotate(-8deg);
+      font-weight:700;
+    }
+
+    .nav{
+      display:flex;
+      gap:1rem;
+      flex-wrap:wrap;
+    }
+
+    .nav a{
+      padding:0.5rem 0.9rem;
+      border-radius:999px;
+      transition:transform .25s ease, background .25s ease, color .25s ease;
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .nav a:hover{
+      background:rgba(31,26,23,0.06);
+      color:var(--ink);
+      transform:translateY(-2px);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:2rem;
+      align-items:end;
+      padding:3rem 0 2rem;
+      min-height:72vh;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:0.6rem;
+      padding:0.5rem 0.8rem;
+      border:1px solid rgba(31,26,23,0.1);
+      border-radius:999px;
+      background:rgba(255,255,255,0.55);
+      backdrop-filter:blur(12px);
+      font-size:0.9rem;
+      color:var(--muted);
+      margin-bottom:1rem;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--accent-2);
+      box-shadow:0 0 0 6px rgba(45,106,99,0.12);
+    }
+
+    .hero-copy p{
+      max-width:60ch;
+      font-size:1.08rem;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.9rem;
+      margin-top:1.5rem;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:0.6rem;
+      padding:0.95rem 1.25rem;
+      border-radius:999px;
+      font-weight:700;
+      border:1px solid transparent;
+      transition:transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+      cursor:pointer;
+    }
+
+    .btn:active{
+      transform:translateY(1px) scale(0.99);
+    }
+
+    .btn-primary{
+      background:var(--ink);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(31,26,23,0.18);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 18px 38px rgba(31,26,23,0.24);
+    }
+
+    .btn-secondary{
+      background:rgba(255,255,255,0.5);
+      color:var(--ink);
+      border-color:rgba(31,26,23,0.1);
+      backdrop-filter:blur(10px);
+    }
+
+    .btn-secondary:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,0.8);
+    }
+
+    .hero-visual{
+      position:relative;
+      min-height:460px;
+      border-radius:36px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.72), rgba(255,255,255,0.4)),
+        linear-gradient(180deg, rgba(216,106,46,0.1), rgba(45,106,99,0.08));
+      border:1px solid rgba(31,26,23,0.08);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(16px);
+    }
+
+    .code-slab{
+      position:absolute;
+      inset:auto 1.2rem 1.2rem 1.2rem;
+      background:#161412;
+      color:#f3efe8;
+      border-radius:22px;
+      padding:1.1rem;
+      box-shadow:0 24px 50px rgba(0,0,0,0.22);
+      border:1px solid rgba(255,255,255,0.08);
+      transform:rotate(-2deg);
+    }
+
+    .code-slab pre{
+      margin:0;
+      overflow:auto;
+      font-size:0.92rem;
+      line-height:1.65;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .window{
+      position:absolute;
+      top:1.2rem;
+      left:1.2rem;
+      right:4rem;
+      height:170px;
+      border-radius:22px;
+      background:linear-gradient(180deg, #fff, #f5f0e7);
+      border:1px solid rgba(31,26,23,0.08);
+      overflow:hidden;
+      transform:rotate(3deg);
+    }
+
+    .window-bar{
+      height:42px;
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      padding:0 1rem;
+      border-bottom:1px solid rgba(31,26,23,0.08);
+      background:rgba(247,243,234,0.8);
+    }
+
+    .window-bar span{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      display:inline-block;
+    }
+
+    .window-body{
+      padding:1.2rem;
+    }
+
+    .line{
+      height:12px;
+      border-radius:999px;
+      margin-bottom:0.8rem;
+      background:linear-gradient(90deg, rgba(31,26,23,0.16), rgba(31,26,23,0.06));
+    }
+
+    .line.short{width:48%}
+    .line.mid{width:70%}
+    .line.long{width:88%}
+
+    .float-tag{
+      position:absolute;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0.65rem 0.85rem;
+      border-radius:16px;
+      background:rgba(255,255,255,0.78);
+      border:1px solid rgba(31,26,23,0.08);
+      box-shadow:0 16px 30px rgba(31,26,23,0.12);
+      font-weight:700;
+      backdrop-filter:blur(10px);
+    }
+
+    .tag-1{ top:2rem; right:1.2rem; color:var(--accent);}
+    .tag-2{ bottom:10rem; right:1rem; color:var(--accent-2);}
+    .tag-3{ top:12rem; left:1rem; color:var(--ink);}
+
+    section{
+      padding:4rem 0;
+    }
+
+    .section-head{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:1rem;
+      align-items:end;
+      margin-bottom:2rem;
+    }
+
+    .section-note{
+      color:var(--muted);
+      max-width:38ch;
+      font-size:0.96rem;
+    }
+
+    .worksheet-grid{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:1.25rem;
+    }
+
+    .panel{
+      background:var(--paper);
+      border:1px solid rgba(31,26,23,0.09);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:1.4rem;
+      backdrop-filter: blur(16px);
+    }
+
+    .panel.soft{
+      background:linear-gradient(180deg, rgba(255,255,255,0.74), rgba(255,255,255,0.58));
+    }
+
+    .stack{
+      display:grid;
+      gap:1rem;
+    }
+
+    .mini-label{
+      display:inline-block;
+      font-size:0.8rem;
+      font-weight:700;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:var(--accent-2);
+      margin-bottom:0.6rem;
+    }
+
+    .prompt{
+      padding:1rem 0;
+      border-top:1px dashed rgba(31,26,23,0.14);
+    }
+
+    .prompt:first-of-type{
+      border-top:none;
+      padding-top:0;
+    }
+
+    .blank{
+      display:block;
+      min-height:44px;
+      border-bottom:2px solid rgba(31,26,23,0.18);
+      margin-top:0.6rem;
+    }
+
+    .code-block{
+      background:#171513;
+      color:#f4efe8;
+      border-radius:18px;
+      padding:1rem;
+      overflow:auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size:0.95rem;
+      line-height:1.65;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+
+    .highlight{
+      color:#f5b36d;
+    }
+
+    .highlight-2{
+      color:#87d1c5;
+    }
+
+    .checklist{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:0.85rem;
+    }
+
+    .checklist li{
+      display:flex;
+      align-items:flex-start;
+      gap:0.8rem;
+    }
+
+    .check{
+      width:24px;
+      height:24px;
+      border-radius:8px;
+      background:linear-gradient(135deg, rgba(45,106,99,0.22), rgba(45,106,99,0.08));
+      border:1px solid rgba(45,106,99,0.2);
+      flex:0 0 auto;
+      margin-top:0.1rem;
+    }
+
+    .tag-wall{
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.7rem;
+      margin-top:1rem;
+    }
+
+    .tag{
+      padding:0.55rem 0.85rem;
+      border-radius:999px;
+      background:rgba(31,26,23,0.06);
+      border:1px solid rgba(31,26,23,0.08);
+      font-weight:600;
+      font-size:0.92rem;
+    }
+
+    .challenge{
+      display:grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap:1.25rem;
+      align-items:start;
+    }
+
+    .big-lines{
+      display:grid;
+      gap:0.8rem;
+      margin-top:1rem;
+    }
+
+    .big-line{
+      min-height:54px;
+      border-bottom:2px solid rgba(31,26,23,0.18);
+    }
+
+    .footer{
+      padding:2rem 0 4rem;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      flex-wrap:wrap;
+      border-top:1px solid rgba(31,26,23,0.08);
+      margin-top:2rem;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(18px);
+      animation:rise .8s ease forwards;
+    }
+
+    .delay-1{animation-delay:.08s}
+    .delay-2{animation-delay:.16s}
+    .delay-3{animation-delay:.24s}
+    .delay-4{animation-delay:.32s}
+    .delay-5{animation-delay:.4s}
+
+    .inview{
+      opacity:1 !important;
+      transform:translateY(0) !important;
+      transition:opacity .8s ease, transform .8s ease;
+    }
+
+    @keyframes rise{
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media (max-width: 980px){
+      .hero,
+      .worksheet-grid,
+      .challenge,
+      .section-head{
+        grid-template-columns:1fr;
+      }
+
+      .hero{
+        min-height:auto;
+        padding-top:2rem;
+      }
+
+      .hero-visual{
+        min-height:400px;
+      }
+
+      .section-head{
+        align-items:start;
+      }
+    }
+
+    @media (max-width: 640px){
+      .topbar{
+        position:relative;
+        padding-top:0.8rem;
+      }
+
+      .nav{
+        display:none;
+      }
+
+      .page{
+        width:min(calc(100% - 1rem), var(--max));
+      }
+
+      .panel{
+        padding:1rem;
+      }
+
+      .hero-visual{
+        min-height:350px;
+        border-radius:24px;
+      }
+
+      .code-slab{
+        inset:auto 0.8rem 0.8rem 0.8rem;
+      }
+
+      .window{
+        left:0.8rem;
+        right:2.5rem;
+      }
+    }
+
+    @media print{
+      .topbar, .hero-actions, .footer, .float-tag{
+        display:none !important;
+      }
+      body{
+        background:#fff;
+      }
+      .panel, .hero-visual{
+        box-shadow:none;
+        backdrop-filter:none;
+        background:#fff;
+      }
+      .reveal{
+        opacity:1 !important;
+        transform:none !important;
+        animation:none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="page" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+      <a href="#top" class="brand" aria-label="HTML worksheet home">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span>HTML Starter Worksheet</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#basics">Basics</a>
+        <a href="#tags">Tags</a>
+        <a href="#practice">Practice</a>
+        <a href="#challenge">Challenge</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="page hero">
+      <div class="hero-copy">
+        <div class="eyebrow reveal delay-1">
+          <span class="dot"></span>
+          Beginner-friendly • Designed for age 16+
+        </div>
+        <h1 class="reveal delay-2">Learn the language that builds the web.</h1>
+        <p class="reveal delay-3">
+          This worksheet introduces HTML in a way that feels practical, visual, and easy to follow. Use it in class, at home, or as a revision sheet while you build your first webpage.
+        </p>
+        <div class="hero-actions reveal delay-4">
+          <a class="btn btn-primary" href="#practice">Start the worksheet</a>
+          <button class="btn btn-secondary" onclick="window.print()">Print worksheet</button>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal delay-5" aria-hidden="true">
+        <div class="window">
+          <div class="window-bar">
+            <span style="background:#ff6b6b"></span>
+            <span style="background:#f7b267"></span>
+            <span style="background:#76c893"></span>
+          </div>
+          <div class="window-body">
+            <div class="line long"></div>
+            <div class="line mid"></div>
+            <div class="line short"></div>
+          </div>
+        </div>
+
+        <div class="float-tag tag-1">&lt;h1&gt;</div>
+        <div class="float-tag tag-2">&lt;p&gt;</div>
+        <div class="float-tag tag-3">&lt;a&gt;</div>
+
+        <div class="code-slab">
+<pre>&lt;<span class="highlight">html</span>&gt;
+  &lt;<span class="highlight">head</span>&gt;
+    &lt;<span class="highlight">title</span>&gt;My First Page&lt;/<span class="highlight">title</span>&gt;
+  &lt;/<span class="highlight">head</span>&gt;
+  &lt;<span class="highlight">body</span>&gt;
+    &lt;<span class="highlight-2">h1</span>&gt;Hello, world!&lt;/<span class="highlight-2">h1</span>&gt;
+    &lt;<span class="highlight-2">p</span>&gt;I am learning HTML.&lt;/<span class="highlight-2">p</span>&gt;
+  &lt;/<span class="highlight">body</span>&gt;
+&lt;/<span class="highlight">html</span>&gt;</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="basics" class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Part 1</div>
+          <h2>What is HTML?</h2>
+        </div>
+        <p class="section-note">Think of HTML as the structure of a webpage. It tells the browser what each piece of content is.</p>
+      </div>
+
+      <div class="worksheet-grid">
+        <article class="panel soft reveal">
+          <h3>Quick notes</h3>
+          <ul class="checklist" style="margin-top:1rem;">
+            <li><span class="check"></span><span><strong>HTML</strong> stands for <strong>HyperText Markup Language</strong>.</span></li>
+            <li><span class="check"></span><span>It uses <strong>tags</strong> like <code>&lt;h1&gt;</code> and <code>&lt;p&gt;</code> to label content.</span></li>
+            <li><span class="check"></span><span>Most tags come in <strong>pairs</strong>: an opening tag and a closing tag.</span></li>
+            <li><span class="check"></span><span>HTML builds the <strong>structure</strong> of a page. CSS styles it. JavaScript adds interactivity.</span></li>
+          </ul>
+
+          <div class="tag-wall" aria-label="Common beginner tags">
+            <span class="tag">&lt;html&gt;</span>
+            <span class="tag">&lt;head&gt;</span>
+            <span class="tag">&lt;body&gt;</span>
+            <span class="tag">&lt;h1&gt;</span>
+            <span class="tag">&lt;p&gt;</span>
+            <span class="tag">&lt;a&gt;</span>
+            <span class="tag">&lt;img&gt;</span>
+            <span class="tag">&lt;ul&gt;</span>
+            <span class="tag">&lt;li&gt;</span>
+          </div>
+        </article>
+
+        <aside class="panel reveal">
+          <div class="mini-label">Think</div>
+          <h3>Answer in your own words</h3>
+
+          <div class="prompt">
+            <p>1. What does HTML do on a webpage?</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>2. What is a tag?</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>3. Name one thing HTML is used for.</p>
+            <span class="blank"></span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="tags" class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Part 2</div>
+          <h2>Meet the core tags</h2>
+        </div>
+        <p class="section-note">These are some of the first tags most people learn when starting web development.</p>
+      </div>
+
+      <div class="worksheet-grid">
+        <div class="panel reveal">
+          <h3>Common beginner tags and what they do</h3>
+          <div class="stack" style="margin-top:1rem;">
+            <div class="prompt">
+              <p><strong>&lt;h1&gt;</strong> — the main heading on a page</p>
+            </div>
+            <div class="prompt">
+              <p><strong>&lt;p&gt;</strong> — a paragraph of text</p>
+            </div>
+            <div class="prompt">
+              <p><strong>&lt;a&gt;</strong> — a link to another page or website</p>
+            </div>
+            <div class="prompt">
+              <p><strong>&lt;ul&gt;</strong> — an unordered list</p>
+            </div>
+            <div class="prompt">
+              <p><strong>&lt;li&gt;</strong> — one item inside a list</p>
+            </div>
+            <div class="prompt">
+              <p><strong>&lt;img&gt;</strong> — an image element</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel soft reveal">
+          <div class="mini-label">Mini task</div>
+          <h3>Match the tag to the job</h3>
+
+          <div class="prompt">
+            <p>a) Creates a paragraph: <span class="blank" style="min-height:32px;"></span></p>
+          </div>
+
+          <div class="prompt">
+            <p>b) Creates a link: <span class="blank" style="min-height:32px;"></span></p>
+          </div>
+
+          <div class="prompt">
+            <p>c) Creates the biggest heading: <span class="blank" style="min-height:32px;"></span></p>
+          </div>
+
+          <div class="prompt">
+            <p>d) Creates a list item: <span class="blank" style="min-height:32px;"></span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="practice" class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Part 3</div>
+          <h2>Read the code</h2>
+        </div>
+        <p class="section-note">Study the example below, then answer the questions underneath it.</p>
+      </div>
+
+      <div class="worksheet-grid">
+        <article class="panel reveal">
+          <h3>Example HTML</h3>
+          <div class="code-block" aria-label="Example HTML code">
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My Hobby Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Basketball&lt;/h1&gt;
+    &lt;p&gt;Basketball is my favourite sport.&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Teamwork&lt;/li&gt;
+      &lt;li&gt;Fitness&lt;/li&gt;
+      &lt;li&gt;Competition&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+          </div>
+        </article>
+
+        <aside class="panel soft reveal">
+          <div class="mini-label">Questions</div>
+          <h3>Answer the questions</h3>
+
+          <div class="prompt">
+            <p>1. What is the title of the page?</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>2. What text appears inside the main heading?</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>3. How many list items are there?</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>4. What tag is used to create the paragraph?</p>
+            <span class="blank"></span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Part 4</div>
+          <h2>Fix the mistakes</h2>
+        </div>
+        <p class="section-note">The code below has errors. Spot them and rewrite it correctly.</p>
+      </div>
+
+      <div class="challenge">
+        <div class="panel reveal">
+          <h3>Broken code</h3>
+          <div class="code-block">
+&lt;body&gt;
+  &lt;h1&gt;My School&lt;h1&gt;
+  &lt;p&gt;I study computer science.&lt;/p
+  &lt;ul&gt;
+    &lt;li&gt;HTML&lt;li&gt;
+    &lt;li&gt;CSS&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/body&gt;
+          </div>
+        </div>
+
+        <div class="panel soft reveal">
+          <div class="mini-label">Your turn</div>
+          <h3>Rewrite it correctly</h3>
+          <div class="big-lines">
+            <div class="big-line"></div>
+            <div class="big-line"></div>
+            <div class="big-line"></div>
+            <div class="big-line"></div>
+            <div class="big-line"></div>
+            <div class="big-line"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="challenge" class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Part 5</div>
+          <h2>Build your own mini webpage</h2>
+        </div>
+        <p class="section-note">Use the prompts below to plan a simple page about yourself or one of your interests.</p>
+      </div>
+
+      <div class="worksheet-grid">
+        <article class="panel reveal">
+          <h3>Include these elements</h3>
+          <ul class="checklist" style="margin-top:1rem;">
+            <li><span class="check"></span><span>A page title</span></li>
+            <li><span class="check"></span><span>One main heading using <code>&lt;h1&gt;</code></span></li>
+            <li><span class="check"></span><span>One paragraph about your topic</span></li>
+            <li><span class="check"></span><span>A list with three items</span></li>
+            <li><span class="check"></span><span>An optional link using <code>&lt;a&gt;</code></span></li>
+          </ul>
+
+          <div class="prompt" style="margin-top:1rem;">
+            <p><strong>Topic ideas:</strong> favourite game, music artist, sport, hobby, dream job, or school subject.</p>
+          </div>
+        </article>
+
+        <aside class="panel soft reveal">
+          <div class="mini-label">Planning space</div>
+          <h3>Sketch your content</h3>
+
+          <div class="prompt">
+            <p>Page title:</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>Main heading:</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>Paragraph idea:</p>
+            <span class="blank"></span>
+          </div>
+
+          <div class="prompt">
+            <p>Three list items:</p>
+            <span class="blank"></span>
+            <span class="blank"></span>
+            <span class="blank"></span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="section-head reveal">
+        <div>
+          <div class="mini-label">Extension</div>
+          <h2>Starter template</h2>
+        </div>
+        <p class="section-note">Use this if you want to type your answers into a real HTML file.</p>
+      </div>
+
+      <div class="panel reveal">
+        <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My Webpage&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;My Topic&lt;/h1&gt;
+    &lt;p&gt;Write your paragraph here.&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;First item&lt;/li&gt;
+      &lt;li&gt;Second item&lt;/li&gt;
+      &lt;li&gt;Third item&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+        </div>
+      </div>
+    </section>
+
+    <footer class="page footer">
+      <div>Beginner HTML Worksheet • Clear, printable, classroom-friendly</div>
+      <div>Tip: HTML is easiest to learn by building something small and personal.</div>
+    </footer>
+  </main>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('inview');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      if (!el.classList.contains('delay-1') &&
+          !el.classList.contains('delay-2') &&
+          !el.classList.contains('delay-3') &&
+          !el.classList.contains('delay-4') &&
+          !el.classList.contains('delay-5')) {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(18px)";
+      }
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
