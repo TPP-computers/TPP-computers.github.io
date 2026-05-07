@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Printable Jekyll Business Website Worksheet</title>
+  <meta name="description" content="A printable worksheet for building a business website with Jekyll from scratch, including sample files, commands, advanced features, and annotated code examples." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f6f1e8;
+      --ink:#1b1a17;
+      --muted:#5e584d;
+      --accent:#8b5e34;
+      --accent-2:#d7c2a4;
+      --line:#c8b89e;
+      --panel:#fffdf9;
+      --highlight:#f0e4d3;
+      --shadow:0 18px 40px rgba(58,41,24,.10);
+      --max:1100px;
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Space Grotesk", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(139,94,52,.08), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(215,194,164,.32), transparent 24%),
+        linear-gradient(180deg, #f8f4ed 0%, var(--paper) 100%);
+      line-height:1.55;
+    }
+
+    .page-shell{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:2rem 1rem 6rem;
+    }
+
+    .masthead{
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,255,255,.42)),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(139,94,52,.05) 0 10px,
+          rgba(255,255,255,0) 10px 20px
+        );
+      border:1px solid rgba(139,94,52,.18);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:clamp(1.5rem, 3vw, 3rem);
+      margin-bottom:1.5rem;
+      backdrop-filter: blur(8px);
+      animation:rise .8s ease both;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      font-family:"IBM Plex Mono", monospace;
+      font-size:.82rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--accent);
+      margin-bottom:.8rem;
+      border-bottom:1px solid var(--line);
+      padding-bottom:.3rem;
+    }
+
+    h1,h2,h3,h4{
+      margin:0 0 .7rem;
+      line-height:.95;
+      letter-spacing:-.03em;
+    }
+
+    h1{
+      font-size:clamp(2.2rem, 7vw, 5rem);
+      max-width:10ch;
+    }
+
+    h2{
+      font-size:clamp(1.5rem, 3vw, 2.4rem);
+      margin-top:2rem;
+    }
+
+    h3{
+      font-size:clamp(1.05rem, 2vw, 1.35rem);
+      margin-top:1.4rem;
+    }
+
+    p, li{
+      font-size:1rem;
+      color:var(--ink);
+    }
+
+    .lede{
+      max-width:62ch;
+      color:var(--muted);
+      font-size:1.05rem;
+      margin-top:1rem;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      margin-top:1.3rem;
+    }
+
+    button, .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      text-decoration:none;
+      font:inherit;
+      border-radius:999px;
+      padding:.9rem 1.15rem;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .btn-primary{
+      background:var(--ink);
+      color:#fff;
+      box-shadow:0 10px 20px rgba(27,26,23,.16);
+    }
+
+    .btn-secondary{
+      background:transparent;
+      color:var(--ink);
+      border:1px solid var(--line);
+    }
+
+    .btn:hover, button:hover{transform:translateY(-2px)}
+    .btn:active, button:active{transform:translateY(0) scale(.98)}
+
+    .print-note{
+      margin-top:1rem;
+      font-size:.92rem;
+      color:var(--muted);
+      font-family:"IBM Plex Mono", monospace;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 290px minmax(0,1fr);
+      gap:1.25rem;
+      align-items:start;
+    }
+
+    .sidebar, .content{
+      animation:rise .9s ease both;
+    }
+
+    .sidebar{
+      position:sticky;
+      top:1rem;
+      align-self:start;
+      background:rgba(255,253,249,.78);
+      border:1px solid rgba(139,94,52,.16);
+      border-radius:22px;
+      padding:1rem;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .sidebar h2{
+      font-size:1rem;
+      line-height:1.2;
+      margin:0 0 .85rem;
+      letter-spacing:-.02em;
+    }
+
+    .toc{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:.4rem;
+    }
+
+    .toc a{
+      display:block;
+      padding:.52rem .65rem;
+      border-radius:12px;
+      color:var(--ink);
+      text-decoration:none;
+      transition:background .2s ease, transform .2s ease;
+      font-size:.95rem;
+    }
+
+    .toc a:hover,
+    .toc a.active{
+      background:var(--highlight);
+      transform:translateX(4px);
+    }
+
+    .content{
+      display:grid;
+      gap:1rem;
+    }
+
+    .sheet{
+      background:rgba(255,253,249,.86);
+      border:1px solid rgba(139,94,52,.14);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .sheet-header{
+      padding:1.25rem 1.25rem 0;
+    }
+
+    .sheet-body{
+      padding:0 1.25rem 1.25rem;
+    }
+
+    .meta-band{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:.8rem;
+      margin-top:1rem;
+      margin-bottom:1.25rem;
+    }
+
+    .meta-item{
+      border:1px dashed var(--line);
+      border-radius:16px;
+      padding:.85rem;
+      min-height:88px;
+      background:linear-gradient(180deg, rgba(255,255,255,.68), rgba(240,228,211,.48));
+    }
+
+    .meta-label{
+      display:block;
+      font-family:"IBM Plex Mono", monospace;
+      color:var(--accent);
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      margin-bottom:.4rem;
+    }
+
+    .checklist{
+      list-style:none;
+      padding:0;
+      margin:.8rem 0 0;
+      display:grid;
+      gap:.55rem;
+    }
+
+    .checklist li{
+      display:grid;
+      grid-template-columns:22px 1fr;
+      gap:.65rem;
+      align-items:start;
+    }
+
+    .box{
+      width:18px;
+      height:18px;
+      border:1.7px solid var(--accent);
+      border-radius:4px;
+      margin-top:.15rem;
+      background:#fff;
+    }
+
+    .section-grid{
+      display:grid;
+      gap:1rem;
+    }
+
+    .callout{
+      border-left:4px solid var(--accent);
+      background:var(--highlight);
+      padding:1rem 1rem 1rem 1.1rem;
+      border-radius:0 14px 14px 0;
+      margin:1rem 0;
+    }
+
+    .code-wrap{
+      margin:1rem 0 1.2rem;
+      border:1px solid rgba(139,94,52,.16);
+      border-radius:18px;
+      overflow:hidden;
+      background:#201a16;
+      box-shadow:0 16px 30px rgba(28,19,12,.18);
+    }
+
+    .code-label{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+      padding:.78rem 1rem;
+      background:linear-gradient(180deg, #312722, #261f1b);
+      color:#f5e8d8;
+      font-family:"IBM Plex Mono", monospace;
+      font-size:.82rem;
+      letter-spacing:.03em;
+    }
+
+    pre{
+      margin:0;
+      padding:1rem;
+      overflow:auto;
+      font-family:"IBM Plex Mono", monospace;
+      font-size:.88rem;
+      line-height:1.58;
+      color:#f7f0e8;
+    }
+
+    code{font-family:"IBM Plex Mono", monospace}
+
+    .two-col{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:1rem;
+    }
+
+    .divider{
+      height:1px;
+      background:linear-gradient(90deg, transparent, var(--line), transparent);
+      margin:1.4rem 0;
+    }
+
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      margin-top:1rem;
+      font-size:.94rem;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(16px);
+      transition:opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    @keyframes rise{
+      from{opacity:0; transform:translateY(18px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    @media (max-width: 920px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{position:relative; top:auto}
+      .meta-band, .two-col{grid-template-columns:1fr}
+    }
+
+    @media print{
+      :root{
+        --paper:#ffffff;
+        --ink:#000000;
+        --muted:#333333;
+        --accent:#000000;
+        --accent-2:#dddddd;
+        --line:#999999;
+        --panel:#ffffff;
+        --highlight:#f3f3f3;
+        --shadow:none;
+      }
+
+      body{
+        background:#fff !important;
+        color:#000;
+        font-size:11pt;
+      }
+
+      .page-shell{
+        max-width:none;
+        padding:0;
+      }
+
+      .masthead, .sidebar, .sheet{
+        box-shadow:none !important;
+        backdrop-filter:none !important;
+        background:#fff !important;
+        border:1px solid #aaa !important;
+      }
+
+      .toolbar,
+      .print-hide{
+        display:none !important;
+      }
+
+      .layout{
+        grid-template-columns:1fr;
+      }
+
+      .sidebar{
+        position:static;
+        margin-bottom:1rem;
+      }
+
+      a{
+        color:#000;
+        text-decoration:none;
+      }
+
+      .code-wrap{
+        box-shadow:none;
+        border:1px solid #999;
+        break-inside:avoid;
+      }
+
+      .code-label{
+        background:#efefef !important;
+        color:#000 !important;
+      }
+
+      pre{
+        color:#000 !important;
+        background:#fff !important;
+        white-space:pre-wrap;
+        word-break:break-word;
+      }
+
+      .sheet, .masthead, .code-wrap, .callout, .meta-item{
+        break-inside:avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="masthead">
+      <span class="eyebrow">Printable worksheet · Jekyll from scratch</span>
+      <h1>Business Website Build Worksheet</h1>
+      <p class="lede">
+        A printable, beginner-friendly guide for planning, building, and launching a business website with Jekyll.
+        This version includes setup commands, sample files, advanced features, and annotated code samples that explain what each part is doing.
+      </p>
+      <div class="toolbar print-hide">
+        <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+        <a class="btn btn-secondary" href="#worksheet">Jump to worksheet</a>
+      </div>
+      <p class="print-note">Tip: Use your browser’s “Save as PDF” option for a clean handout.</p>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar print-hide">
+        <h2>Contents</h2>
+        <ul class="toc">
+          <li><a href="#worksheet">1. Overview</a></li>
+          <li><a href="#setup">2. Environment setup</a></li>
+          <li><a href="#new-site">3. Create a new site</a></li>
+          <li><a href="#structure">4. Plan the website</a></li>
+          <li><a href="#config">5. Site configuration</a></li>
+          <li><a href="#layout-file">6. Main layout</a></li>
+          <li><a href="#styles">7. Styling</a></li>
+          <li><a href="#pages">8. Content pages</a></li>
+          <li><a href="#contact">9. Contact form</a></li>
+          <li><a href="#seo">10. SEO basics</a></li>
+          <li><a href="#deploy">11. Deployment</a></li>
+          <li><a href="#advanced">12. Advanced features</a></li>
+          <li><a href="#notes">13. Notes & checklist</a></li>
+        </ul>
+      </aside>
+
+      <main class="content">
+        <section class="sheet reveal" id="worksheet">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 1</span>
+            <h2>Worksheet overview</h2>
+          </div>
+          <div class="sheet-body">
+            <div class="meta-band">
+              <div class="meta-item">
+                <span class="meta-label">Project</span>
+                Business website using Jekyll
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Audience</span>
+                Beginners starting from scratch
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Goal</span>
+                Build, test, deploy, and maintain a professional static website
+              </div>
+            </div>
+
+            <h3>Recommended pages</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Home</span></li>
+              <li><span class="box"></span><span>About</span></li>
+              <li><span class="box"></span><span>Services</span></li>
+              <li><span class="box"></span><span>Contact</span></li>
+              <li><span class="box"></span><span>Blog (optional but useful for SEO and updates)</span></li>
+            </ul>
+
+            <div class="callout">
+              <strong>What is Jekyll?</strong><br />
+              Jekyll is a static site generator. It takes templates, Markdown files, and configuration data, then builds them into a fast, secure website made of plain HTML, CSS, and JavaScript.
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="setup">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 2</span>
+            <h2>Environment setup</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>Tasks</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Install Ruby</span></li>
+              <li><span class="box"></span><span>Install Bundler and Jekyll</span></li>
+              <li><span class="box"></span><span>Verify the installation</span></li>
+              <li><span class="box"></span><span>Install a code editor such as Visual Studio Code</span></li>
+            </ul>
+
+            <div class="two-col">
+              <div>
+                <h3>Mac example</h3>
+                <div class="code-wrap">
+                  <div class="code-label"><span>Terminal commands</span><span>macOS / Homebrew</span></div>
+                  <pre><code># Install Ruby using Homebrew
+# This gives you the Ruby language needed to run Jekyll
+brew install ruby
+
+# Install Jekyll and Bundler globally
+# Bundler manages project dependencies
+gem install jekyll bundler
+
+# Verify that Jekyll installed correctly
+jekyll -v</code></pre>
+                </div>
+              </div>
+              <div>
+                <h3>Windows note</h3>
+                <div class="callout">
+                  Use <strong>RubyInstaller with Devkit</strong> on Windows. Then run:
+                  <br /><code>gem install jekyll bundler</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="new-site">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 3</span>
+            <h2>Create a new Jekyll site</h2>
+          </div>
+          <div class="sheet-body">
+            <div class="code-wrap">
+              <div class="code-label"><span>Terminal commands</span><span>Create and run site locally</span></div>
+              <pre><code># Create a brand-new Jekyll site in a folder named my-business-site
+jekyll new my-business-site
+
+# Move into the project folder
+cd my-business-site
+
+# Start the local development server
+# Jekyll will build the site and watch for file changes
+bundle exec jekyll serve
+
+# Open this in your browser:
+# http://localhost:4000</code></pre>
+            </div>
+
+            <h3>Know the folder structure</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span><code>_config.yml</code> = site-wide settings</span></li>
+              <li><span class="box"></span><span><code>_layouts/</code> = page templates</span></li>
+              <li><span class="box"></span><span><code>_includes/</code> = reusable pieces like header/footer</span></li>
+              <li><span class="box"></span><span><code>_posts/</code> = blog posts</span></li>
+              <li><span class="box"></span><span><code>_site/</code> = generated site output, do not edit directly</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="structure">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 4</span>
+            <h2>Plan the website structure</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>Before building, define:</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Business name</span></li>
+              <li><span class="box"></span><span>Main value proposition</span></li>
+              <li><span class="box"></span><span>Target audience</span></li>
+              <li><span class="box"></span><span>Primary call to action</span></li>
+              <li><span class="box"></span><span>Pages needed</span></li>
+            </ul>
+
+            <div class="callout">
+              <strong>Suggested sitemap:</strong><br />
+              Home → About → Services → Contact → Blog
+            </div>
+
+            <h3>Notes area</h3>
+            <p>Business name: ____________________________________________</p>
+            <p>Main goal of site: _________________________________________</p>
+            <p>Primary call to action: ____________________________________</p>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="config">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 5</span>
+            <h2>Sample site configuration</h2>
+          </div>
+          <div class="sheet-body">
+            <p>Place this in <code>_config.yml</code>.</p>
+            <div class="code-wrap">
+              <div class="code-label"><span>_config.yml</span><span>Site-wide configuration</span></div>
+              <pre><code>title: My Business Site
+# The main title of your website
+
+description: >
+  Welcome to our business website built with Jekyll.
+# A default site description used for SEO and metadata
+
+url: "https://www.mybusiness.com"
+# Your live website URL once deployed
+
+baseurl: ""
+# Leave blank if the site is at the root domain
+# Example: use "/mysite" if hosted in a subfolder
+
+markdown: kramdown
+# Tells Jekyll which Markdown engine to use
+
+plugins:
+  - jekyll-seo-tag
+  # Adds SEO tags such as title, description, Open Graph tags
+
+  - jekyll-sitemap
+  # Automatically generates a sitemap.xml for search engines
+
+paginate: 5
+# Number of blog posts per page when using pagination
+
+paginate_path: "/blog/page:num/"
+# URL pattern for paginated blog pages</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="layout-file">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 6</span>
+            <h2>Main layout file</h2>
+          </div>
+          <div class="sheet-body">
+            <p>Create <code>_layouts/default.html</code> as your base template.</p>
+            <div class="code-wrap">
+              <div class="code-label"><span>_layouts/default.html</span><span>Base page layout with navigation and footer</span></div>
+              <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+
+  &lt;title&gt;{{ page.title }} | {{ site.title }}&lt;/title&gt;
+  &lt;!-- Uses the current page title plus the site title --&gt;
+
+  {% seo %}
+  &lt;!-- Inserts SEO tags from the jekyll-seo-tag plugin --&gt;
+
+  &lt;meta name="description" content="{{ page.description | default: site.description }}"&gt;
+  &lt;!-- Uses page description if available, otherwise falls back to site description --&gt;
+
+  &lt;meta name="keywords" content="{{ page.keywords | default: '' }}"&gt;
+  &lt;!-- Optional keywords field from page front matter --&gt;
+
+  &lt;link rel="stylesheet" href="/assets/main.css"&gt;
+  &lt;!-- Loads your site stylesheet --&gt;
+
+  &lt;link rel="icon" href="/assets/favicon.ico"&gt;
+  &lt;!-- Browser tab icon --&gt;
+
+  &lt;!-- Google Analytics: replace YOUR_TRACKING_ID with your real ID --&gt;
+  &lt;script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_TRACKING_ID"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'YOUR_TRACKING_ID');
+  &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;a href="/{{ site.baseurl }}/" class="{% if page.url == '/' %}active{% endif %}"&gt;Home&lt;/a&gt;
+          &lt;!-- Adds the class 'active' when the current page URL is / --&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="/{{ site.baseurl }}/about" class="{% if page.url == '/about/' %}active{% endif %}"&gt;About&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="/{{ site.baseurl }}/services" class="{% if page.url == '/services/' %}active{% endif %}"&gt;Services&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="/{{ site.baseurl }}/contact" class="{% if page.url == '/contact/' %}active{% endif %}"&gt;Contact&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;a href="/{{ site.baseurl }}/blog" class="{% if page.url contains '/blog' %}active{% endif %}"&gt;Blog&lt;/a&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    {{ content }}
+    &lt;!-- Jekyll inserts the content of each page here --&gt;
+  &lt;/main&gt;
+
+  {% include footer.html %}
+  &lt;!-- Loads a reusable footer file from _includes/footer.html --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="styles">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 7</span>
+            <h2>Sample stylesheet</h2>
+          </div>
+          <div class="sheet-body">
+            <p>Create <code>assets/main.css</code> or <code>assets/main.scss</code>.</p>
+            <div class="code-wrap">
+              <div class="code-label"><span>assets/main.css</span><span>Basic starter styles</span></div>
+              <pre><code>body {
+  font-family: Georgia, serif;
+  /* Sets the overall typeface */
+
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  background-color: #004080;
+  padding: 12px 20px;
+  margin: 0;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+header nav ul li a:hover,
+.active {
+  text-decoration: underline;
+  /* Highlights hovered links and the active page link */
+}
+
+main {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #004080;
+  color: white;
+  margin-top: 40px;
+}
+
+form input,
+form textarea,
+form button {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 12px;
+  padding: 10px;
+  font: inherit;
+}
+
+form button {
+  background: #004080;
+  color: white;
+  border: 0;
+  cursor: pointer;
+}</code></pre>
+            </div>
+            <div class="callout">
+              Note: Earlier examples used Arial. For a stronger production site, choose a more intentional web font. For a simple beginner worksheet, this CSS keeps the focus on structure.
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="pages">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 8</span>
+            <h2>Create content pages</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>About page</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>about.md</span><span>Markdown page with front matter</span></div>
+              <pre><code>---
+layout: default
+title: About Us
+description: Learn more about our business and our mission.
+keywords: about, company, mission
+---
+
+# About Our Business
+
+We are a dedicated team providing excellent services to our clients.
+
+Our mission is to deliver quality, value, and reliable support.</code></pre>
+            </div>
+
+            <h3>Services page</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>services.md</span><span>Simple service listing</span></div>
+              <pre><code>---
+layout: default
+title: Services
+description: Explore the services we offer.
+keywords: services, consulting, development
+---
+
+# Our Services
+
+- Consulting
+- Web Development
+- Marketing Strategy
+- Customer Support</code></pre>
+            </div>
+
+            <h3>Home page</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>index.md</span><span>Basic homepage content</span></div>
+              <pre><code>---
+layout: default
+title: Home
+description: Welcome to our business website.
+keywords: business, home, services
+---
+
+# Welcome to Our Business
+
+We help clients solve problems, improve their online presence, and grow with confidence.
+
+[Contact us](/contact)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="contact">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 9</span>
+            <h2>Add a contact form</h2>
+          </div>
+          <div class="sheet-body">
+            <p>Because Jekyll creates static websites, forms need a third-party service such as Formspree or Netlify Forms.</p>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>contact.md</span><span>Contact form using Formspree</span></div>
+              <pre><code>---
+layout: default
+title: Contact Us
+description: Contact our business for more information.
+keywords: contact, form, email
+---
+
+# Get in Touch
+
+&lt;form action="https://formspree.io/f/your-id" method="POST"&gt;
+  &lt;!-- Replace your-id with your actual Formspree form ID --&gt;
+
+  &lt;label for="name"&gt;Name:&lt;/label&gt;
+  &lt;input type="text" id="name" name="name" required&gt;
+  &lt;!-- required means the user must fill this out --&gt;
+
+  &lt;label for="email"&gt;Email:&lt;/label&gt;
+  &lt;input type="email" id="email" name="email" required&gt;
+  &lt;!-- type=email helps browsers validate email format --&gt;
+
+  &lt;label for="message"&gt;Message:&lt;/label&gt;
+  &lt;textarea id="message" name="message" rows="5" required&gt;&lt;/textarea&gt;
+
+  &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="seo">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 10</span>
+            <h2>SEO basics</h2>
+          </div>
+          <div class="sheet-body">
+            <ul class="checklist">
+              <li><span class="box"></span><span>Add a title and description to every page</span></li>
+              <li><span class="box"></span><span>Use the <code>jekyll-seo-tag</code> plugin</span></li>
+              <li><span class="box"></span><span>Use the <code>jekyll-sitemap</code> plugin</span></li>
+              <li><span class="box"></span><span>Write useful page headings and body content</span></li>
+              <li><span class="box"></span><span>Make sure the site works well on mobile</span></li>
+            </ul>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>Front matter SEO example</span><span>Per-page metadata</span></div>
+              <pre><code>---
+layout: default
+title: Home
+description: Welcome to our business website offering top-notch services.
+keywords: business, consulting, services
+---</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="deploy">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 11</span>
+            <h2>Deploy the website</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>Git setup and first push</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>Terminal commands</span><span>GitHub example</span></div>
+              <pre><code># Start a new Git repository
+git init
+
+# Add all files to Git tracking
+git add .
+
+# Save a first commit
+git commit -m "Initial commit"
+
+# Connect your local project to a remote GitHub repository
+git remote add origin https://github.com/yourusername/my-business-site.git
+
+# Push your code to GitHub
+git push -u origin main</code></pre>
+            </div>
+
+            <h3>Deployment options</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>GitHub Pages</span></li>
+              <li><span class="box"></span><span>Netlify</span></li>
+              <li><span class="box"></span><span>Cloudflare Pages</span></li>
+            </ul>
+
+            <div class="callout">
+              After deployment, add your real domain name and enable HTTPS.
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="advanced">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 12</span>
+            <h2>Advanced features with annotated examples</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>1. Use data files for reusable structured content</h3>
+            <p>Create <code>_data/team.yml</code> to store team member information in one place.</p>
+            <div class="code-wrap">
+              <div class="code-label"><span>_data/team.yml</span><span>Structured data file</span></div>
+              <pre><code>- name: Alice Johnson
+  role: CEO
+  bio: Experienced leader with 10+ years in business development.
+  photo: /assets/team/alice.jpg
+  # Each team member is an item in the list
+
+- name: Bob Smith
+  role: Lead Developer
+  bio: Expert in web technologies and software architecture.
+  photo: /assets/team/bob.jpg</code></pre>
+            </div>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>about.md</span><span>Using site.data in a loop</span></div>
+              <pre><code>---
+layout: default
+title: About Us
+---
+
+# Meet Our Team
+
+&lt;ul&gt;
+  {% for member in site.data.team %}
+    &lt;!-- Loops through each item in _data/team.yml --&gt;
+    &lt;li&gt;
+      &lt;img src="{{ member.photo }}" alt="{{ member.name }}" width="100" /&gt;
+      &lt;h3&gt;{{ member.name }} - {{ member.role }}&lt;/h3&gt;
+      &lt;p&gt;{{ member.bio }}&lt;/p&gt;
+    &lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>2. Add a blog section</h3>
+            <p>Create posts in the <code>_posts</code> folder using the naming format <code>YYYY-MM-DD-title.md</code>.</p>
+            <div class="code-wrap">
+              <div class="code-label"><span>_posts/2026-05-01-launch-announcement.md</span><span>Sample blog post</span></div>
+              <pre><code>---
+layout: post
+title: Launch Announcement
+date: 2026-05-01
+---
+
+We are excited to announce the launch of our new business website built with Jekyll!</code></pre>
+            </div>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>blog.md</span><span>Blog listing page</span></div>
+              <pre><code>---
+layout: default
+title: Blog
+---
+
+# Latest Posts
+
+&lt;ul&gt;
+  {% for post in site.posts %}
+    &lt;!-- site.posts contains all blog posts sorted by date --&gt;
+    &lt;li&gt;
+      &lt;a href="{{ post.url }}"&gt;{{ post.title }}&lt;/a&gt; - {{ post.date | date: "%B %d, %Y" }}
+      &lt;!-- The date filter formats the date nicely --&gt;
+    &lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>3. Add pagination to blog posts</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>blog.html</span><span>Paginated blog page</span></div>
+              <pre><code>---
+layout: default
+title: Blog
+paginate: true
+---
+
+&lt;h1&gt;Blog&lt;/h1&gt;
+
+&lt;ul&gt;
+  {% for post in paginator.posts %}
+    &lt;!-- paginator.posts contains only the posts for the current page --&gt;
+    &lt;li&gt;
+      &lt;a href="{{ post.url }}"&gt;{{ post.title }}&lt;/a&gt; - {{ post.date | date: "%B %d, %Y" }}
+    &lt;/li&gt;
+  {% endfor %}
+&lt;/ul&gt;
+
+&lt;div class="pagination"&gt;
+  {% if paginator.previous_page %}
+    &lt;a href="{{ paginator.previous_page_path }}"&gt;Previous&lt;/a&gt;
+  {% endif %}
+
+  Page {{ paginator.page }} of {{ paginator.total_pages }}
+
+  {% if paginator.next_page %}
+    &lt;a href="{{ paginator.next_page_path }}"&gt;Next&lt;/a&gt;
+  {% endif %}
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>4. Add Google Analytics</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>Inside &lt;head&gt;</span><span>Traffic tracking</span></div>
+              <pre><code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_TRACKING_ID"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'YOUR_TRACKING_ID');
+  // Replace YOUR_TRACKING_ID with your Google Analytics ID
+&lt;/script&gt;</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>5. Highlight the active navigation link</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>Navigation example</span><span>Liquid conditionals</span></div>
+              <pre><code>&lt;a href="/about" class="{% if page.url == '/about/' %}active{% endif %}"&gt;About&lt;/a&gt;
+&lt;!-- If the current page URL matches /about/, Jekyll prints the class active --&gt;</code></pre>
+            </div>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>CSS</span><span>Active state styling</span></div>
+              <pre><code>.active {
+  text-decoration: underline;
+  font-weight: bold;
+}</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>6. Create reusable includes</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>_includes/footer.html</span><span>Reusable footer component</span></div>
+              <pre><code>&lt;footer&gt;
+  &lt;p&gt;&amp;copy; {{ site.time | date: '%Y' }} My Business. All rights reserved.&lt;/p&gt;
+  &lt;!-- site.time gets the current build time, then the date filter extracts the year --&gt;
+&lt;/footer&gt;</code></pre>
+            </div>
+
+            <div class="code-wrap">
+              <div class="code-label"><span>Use include in layout</span><span>DRY principle</span></div>
+              <pre><code>{% include footer.html %}
+&lt;!-- This inserts the contents of _includes/footer.html --&gt;</code></pre>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>7. Add social sharing buttons to blog posts</h3>
+            <div class="code-wrap">
+              <div class="code-label"><span>_layouts/post.html</span><span>Share links</span></div>
+              <pre><code>&lt;div class="social-share"&gt;
+  &lt;a href="https://twitter.com/intent/tweet?text={{ page.title | url_encode }}&amp;url={{ site.url }}{{ page.url }}" target="_blank"&gt;
+    Tweet
+  &lt;/a&gt;
+  |
+  &lt;a href="https://www.facebook.com/sharer/sharer.php?u={{ site.url }}{{ page.url }}" target="_blank"&gt;
+    Share on Facebook
+  &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;!--
+  page.title | url_encode
+  = makes the title safe to use in a URL
+
+  site.url + page.url
+  = builds the full public link to the current post
+--&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="sheet reveal" id="notes">
+          <div class="sheet-header">
+            <span class="eyebrow">Section 13</span>
+            <h2>Final checklist and notes</h2>
+          </div>
+          <div class="sheet-body">
+            <h3>Launch checklist</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Site runs locally with <code>bundle exec jekyll serve</code></span></li>
+              <li><span class="box"></span><span>Navigation links work</span></li>
+              <li><span class="box"></span><span>Contact form submits successfully</span></li>
+              <li><span class="box"></span><span>Page titles and descriptions are set</span></li>
+              <li><span class="box"></span><span>Site is mobile-friendly</span></li>
+              <li><span class="box"></span><span>Images and assets load correctly</span></li>
+              <li><span class="box"></span><span>Site is deployed with HTTPS enabled</span></li>
+            </ul>
+
+            <h3>Maintenance checklist</h3>
+            <ul class="checklist">
+              <li><span class="box"></span><span>Update content regularly</span></li>
+              <li><span class="box"></span><span>Back up the repository</span></li>
+              <li><span class="box"></span><span>Keep gems and plugins updated</span></li>
+              <li><span class="box"></span><span>Check analytics and site performance</span></li>
+            </ul>
+
+            <div class="divider"></div>
+
+            <h3>Notes</h3>
+            <p>________________________________________________________________________</p>
+            <p>________________________________________________________________________</p>
+            <p>________________________________________________________________________</p>
+            <p>________________________________________________________________________</p>
+          </div>
+        </section>
+
+        <p class="footer-note">Printable Jekyll worksheet · Build from scratch, annotate as you learn, and save as PDF for class or client use.</p>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const revealItems = document.querySelectorAll('.reveal');
+    const tocLinks = document.querySelectorAll('.toc a');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+
+    revealItems.forEach(item => revealObserver.observe(item));
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: "-20% 0px -65% 0px", threshold: 0 });
+
+    document.querySelectorAll('section[id]').forEach(section => sectionObserver.observe(section));
+  </script>
+</body>
+</html>
